@@ -56,8 +56,7 @@ class ClientGame(object):
             pressed = pg.key.get_pressed()
 
             for key, action in keyboard_actions.items():
-                if (pressed[key]):
-                    self.server.move(action)
+                self.server.move(pressed[key], action)
 
             self.server.get_update(self.player, self.world)
             self.screen.fill(BLACK)

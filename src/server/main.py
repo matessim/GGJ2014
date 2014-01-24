@@ -64,23 +64,24 @@ class ServerGame(object):
                         self.handle_move(client, event)
                     elif event['type'] == ADD_ITEM:
                         self.handle_add_item(client, event)
-                except:
+                except Exception as e:
                     print "Error handling", event, "from", client
+                    raise e
 
     def handle_move(self, client, event):
         if event['direction'] == LEFT:
-            self.player.walking_left = True
+            self.player.walking_left = event['pressed']
         elif event['direction'] == RIGHT:
-            self.player.walking_right = True
+            self.player.walking_right = event['pressed']
         elif event['direction'] == JUMP:
-            if self.player.on_ground(self.world):
+            if event['pressed'] and self.player.on_ground(self.world):
                 self.player.jump()
 
     def handle_add_item(self, client, event):
         x = event['x']
         y = event['y']
         self.world.add_tile(x, y)
-        self.updates.add((x,y))
+        self.updates.append((x,y))
 
     def update_clients(self):
         for client in self.clients:

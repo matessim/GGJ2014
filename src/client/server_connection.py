@@ -12,8 +12,8 @@ class ServerConnection(Connection):
     def __repr__(self):
         return "<Server>"
 
-    def move(self, direction):
-        self.send_data({'type': MOVE, 'direction': direction})
+    def move(self, pressed, direction):
+        self.send_data({'type': MOVE, 'direction': direction, 'pressed': pressed})
 
     def add_tile(self, x, y):
         self.send_data({'type': ADD_ITEM, 'x': x, 'y': y})
@@ -23,5 +23,4 @@ class ServerConnection(Connection):
             player.rect.x = event['player']['x']
             player.rect.y = event['player']['y']
             for x, y in event['updates']:
-                self.world.add_tile(x,y)
-
+                world.add_tile(x,y)
