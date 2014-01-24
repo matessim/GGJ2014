@@ -28,6 +28,8 @@ class Camera(object):
         return (pos[0] + self.x, pos[1] + self.y)
 
     def set_x_y(self, x, y):
+        self.x = x
+        self.y = y
         if self.x < 0:
             self.x = 0
         elif self.x > WORLD_WIDTH - WIDTH:
@@ -54,12 +56,14 @@ class ClientGame(object):
         self.mouse_pos = (0, 0)
         self.connect_to_server(ip)
         self.cur_tile = 1
-        self.last_keys = []
+        self.last_keys = { key: False for key in keyboard_actions}
 
     def connect_to_server(self, ip):
         s = socket.socket()
         s.connect((ip, SERVER_PORT))
         self.server = ServerConnection(s)
+        self.role = self.server.wait_for_role()
+        print "Connected!"
 
     def run(self):
         while True:
@@ -70,10 +74,13 @@ class ClientGame(object):
                 self.handle_mouse_press()
 
             pressed = pg.key.get_pressed()
-            if pressed != self.last_keys:
-                self.last_keys = pressed
+            my_keys = { key: pressed[key] for key in keyboard_actions}
+
+            if my_keys != self.last_keys:
                 for key, action in keyboard_actions.items():
-                    self.server.move(pressed[key], action)
+                    if self.last_keys[key] != my_keys[key]:
+                        self.server.move(my_keys[key], action)
+                self.last_keys = my_keys
 
             self.server.get_update([self.player_a, self.player_b], self.world)
             self.update_camera()
@@ -87,7 +94,7 @@ class ClientGame(object):
 
     def update_camera(self):
         if self.role in [DISRUPTOR_TEAM_A, DISRUPTOR_TEAM_B]:
-            pressed = pg.get_pressed()
+            pressed = pg.key.get_pressed()
             if pressed[K_a]:
                 self.camera.add_x_offset(-CAMERA_SPEED)
             if pressed[K_d]:

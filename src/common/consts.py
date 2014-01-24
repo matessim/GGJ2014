@@ -17,7 +17,7 @@ JUMP  = 2
 
 # Size of screen and tiles
 SIZE = WIDTH, HEIGHT = 640, 480
-WORLD_WIDTH, WORLD_HEIGHT = 640, 480
+WORLD_WIDTH, WORLD_HEIGHT = 1000, 600
 T_P = 10
 
 CLOCK = pg.time.Clock()

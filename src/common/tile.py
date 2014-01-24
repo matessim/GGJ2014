@@ -8,6 +8,10 @@ class TileMeta(type):
         new_tile_type = type.__new__(mcs, name, bases, d)
         if not hasattr(new_tile_type, '_tile_types'):
             new_tile_type._tile_types = []
+        if not hasattr(new_tile_type, 'solid'):
+            new_tile_type.solid = False
+        if not hasattr(new_tile_type, 'deadly'):
+            new_tile_type.deadly = False
         new_tile_type._tile_types.append(new_tile_type)
         return new_tile_type
 
@@ -35,11 +39,6 @@ class Ground(Tile):
 class Bomb(Tile):
     w = 2
     h = 2
-    solid = False
+    deadly = True
     def __init__(self, x, y):
         Tile.__init__(self, x, y, RED)
-
-
-
-
-
