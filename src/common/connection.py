@@ -13,6 +13,12 @@ class Connection(object):
         return self._send_frame(data)
 
     def get_data(self):
+        """
+        This function returns an array of parsed data that has
+        been received on the socket since the function was last
+        called. If not data has been received, it returns an empty
+        array.
+        """
         data = []
         while select.select([self], [], [], 0)[0]:
             data.append(json.loads(self._get_frame()))
