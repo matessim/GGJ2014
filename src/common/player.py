@@ -4,8 +4,7 @@ from pygame.sprite import Sprite, Group, spritecollide
 from pygame import Rect
 from consts import *
 
-any = __builtins__.any
-
+ 
 class Player(Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)

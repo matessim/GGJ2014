@@ -1,5 +1,5 @@
-start python server/main.py
-start python client/game.py
-start python client/game.py
-start python client/game.py
-start python client/game.py
+start python server/server.py
+start python client/client.py 127.0.0.1
+start python client/client.py 127.0.0.1
+start python client/client.py 127.0.0.1
+start python client/client.py 127.0.0.1
