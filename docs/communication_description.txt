@@ -1,0 +1,17 @@
+Communication Model:
+
+Simple objects (dicts/lists, ints/strings) serialized into JSON and sent over socket in the following format
+
+4B 	Length
+Length 	Data
+
+Data Structure is JSON with the following required fields always in it:cc
+
+Basic JSON Fields:
+Name 			Type		Description
+command_code		uint32		Enum code representing what this message is (ex. Player action, server related message, game start)
+
+
+
+
+
