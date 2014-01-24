@@ -24,8 +24,8 @@ class Player(Sprite):
 
         self.rect.move_ip(x_update, y_update)
         col = any(i.solid for i in pg.sprite.spritecollide(self, world, False))
-        if (col or self.rect.bottom >= HEIGHT or self.rect.top < 0 or
-                self.rect.right >= WIDTH or self.rect.left < 0):
+        if (col or self.rect.bottom > WORLD_HEIGHT or self.rect.top < 0 or
+                self.rect.right > WORLD_WIDTH or self.rect.left < 0):
             # We hit something. Let's undo and move a pixel at a time
             # in each direction until we're stuck
             self.rect.move_ip(-x_update, -y_update)
@@ -36,7 +36,7 @@ class Player(Sprite):
                 if y_update != 0:
                     self.rect.move_ip(0, y_direction)
                     col = any(i.solid for i in pg.sprite.spritecollide(self, world, False))
-                    if col or self.rect.bottom >= HEIGHT or self.rect.top < 0:
+                    if col or self.rect.bottom > WORLD_HEIGHT or self.rect.top < 0:
                         y_update = 0
                         self.dy = 0
                         self.rect.move_ip(0, -y_direction)
@@ -45,7 +45,7 @@ class Player(Sprite):
                 if x_update != 0:
                     self.rect.move_ip(x_direction, 0)
                     col = any(i.solid for i in pg.sprite.spritecollide(self, world, False))
-                    if col or self.rect.right >= WIDTH or self.rect.left < 0:
+                    if col or self.rect.right > WORLD_WIDTH or self.rect.left < 0:
                         x_update = 0
                         self.dx = 0
                         self.rect.move_ip(-x_direction, 0)

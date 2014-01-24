@@ -26,7 +26,7 @@ class ServerGame(object):
     def __init__(self):
         self.player_a = Player()
         self.player_b = Player()
-        self.world = World(WIDTH/T_P, HEIGHT/T_P)
+        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
         self.clients = []
         self.updates = []
 
