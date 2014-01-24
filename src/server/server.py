@@ -24,8 +24,8 @@ pg.init()
 
 class ServerGame(object):
     def __init__(self):
-        self.player_a = Player()
-        self.player_b = Player()
+        self.player_a = Player(BLACK)
+        self.player_b = Player(BLACK)
         self.world = World(WIDTH/T_P, HEIGHT/T_P)
         self.clients = []
         self.updates = []
@@ -72,7 +72,7 @@ class ServerGame(object):
             player = self.player_b
         else:
             return
-        
+
         if event['direction'] == LEFT:
             player.walking_left = event['pressed']
         elif event['direction'] == RIGHT:

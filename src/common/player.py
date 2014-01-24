@@ -6,10 +6,10 @@ from consts import *
 
 
 class Player(Sprite):
-    def __init__(self):
+    def __init__(self, color):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((40, 40), pg.SRCALPHA)
-        pg.draw.circle(self.image, RED, (20, 20), 20)
+        pg.draw.circle(self.image, color, (20, 20), 20)
         pg.draw.circle(self.image, BLACK, (20, 20), 21, 2)
         self.rect = self.image.get_rect()
         self.speed = T_P / 2
