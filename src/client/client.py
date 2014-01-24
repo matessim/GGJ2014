@@ -38,6 +38,7 @@ class ClientGame(object):
         self.mouse_pos = (0, 0)
         self.connect_to_server(ip)
         self.cur_tile = 1
+        self.last_keys = []
 
     def connect_to_server(self, ip):
         s = socket.socket()
@@ -53,9 +54,10 @@ class ClientGame(object):
                 self.handle_mouse_press()
 
             pressed = pg.key.get_pressed()
-
-            for key, action in keyboard_actions.items():
-                self.server.move(pressed[key], action)
+            if pressed != self.last_keys:
+                self.last_keys = pressed
+                for key, action in keyboard_actions.items():
+                    self.server.move(pressed[key], action)
 
             self.server.get_update([self.player_a, self.player_b], self.world)
             self.screen.fill(BLACK)

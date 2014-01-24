@@ -4,6 +4,7 @@ from pygame.sprite import Sprite, Group, spritecollide
 from pygame import Rect
 from consts import *
 
+
 class Player(Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
@@ -22,7 +23,9 @@ class Player(Sprite):
         y_update = self.dy
 
         self.rect.move_ip(x_update, y_update)
-        if pg.sprite.spritecollide(self, world, False):
+        col = any(i.solid for i in pg.sprite.spritecollide(self, world, False))
+        if (col or self.rect.bottom >= HEIGHT or self.rect.top < 0 or
+                self.rect.right >= WIDTH or self.rect.left < 0):
             # We hit something. Let's undo and move a pixel at a time
             # in each direction until we're stuck
             self.rect.move_ip(-x_update, -y_update)
@@ -32,7 +35,8 @@ class Player(Sprite):
             while x_update != 0 or y_update != 0:
                 if y_update != 0:
                     self.rect.move_ip(0, y_direction)
-                    if pg.sprite.spritecollide(self, world, False):
+                    col = any(i.solid for i in pg.sprite.spritecollide(self, world, False))
+                    if col or self.rect.bottom >= HEIGHT or self.rect.top < 0:
                         y_update = 0
                         self.dy = 0
                         self.rect.move_ip(0, -y_direction)
@@ -40,7 +44,8 @@ class Player(Sprite):
                         y_update -= y_direction
                 if x_update != 0:
                     self.rect.move_ip(x_direction, 0)
-                    if pg.sprite.spritecollide(self, world, False):
+                    col = any(i.solid for i in pg.sprite.spritecollide(self, world, False))
+                    if col or self.rect.right >= WIDTH or self.rect.left < 0:
                         x_update = 0
                         self.dx = 0
                         self.rect.move_ip(-x_direction, 0)

@@ -28,16 +28,16 @@ class Tile(Sprite):
 class Ground(Tile):
     w = 1
     h = 1
+    solid = True
     def __init__(self, x, y):
         Tile.__init__(self, x, y, GREEN)
-        self.solid = True
 
 class Bomb(Tile):
     w = 2
     h = 2
+    solid = False
     def __init__(self, x, y):
         Tile.__init__(self, x, y, RED)
-        self.solid = False
 
 
 
