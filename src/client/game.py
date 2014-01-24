@@ -46,6 +46,7 @@ class Game(object):
     def handle_events(self):
         for event in pg.event.get():
             if event.type == QUIT:
+                pg.quit()
                 sys.exit()
             elif event.type == MOUSEMOTION:
                 self.mouse_pos = event.pos
@@ -58,9 +59,9 @@ class Game(object):
                 if event.key == K_UP:
                     self.player.jump()
                 elif event.key == K_LEFT:
-                    self.player.dx = -5
+                    self.player.dx = -T_P / 2
                 elif event.key == K_RIGHT:
-                    self.player.dx = 5
+                    self.player.dx = T_P / 2
             elif event.type == KEYUP:
                 if event.key == K_LEFT:
                     if (self.player.dx < 0):
