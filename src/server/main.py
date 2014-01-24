@@ -80,8 +80,10 @@ class ServerGame(object):
     def handle_add_item(self, client, event):
         x = event['x']
         y = event['y']
-        self.world.add_tile(x, y)
-        self.updates.append((x,y))
+        t = event['t']
+        added = self.world.add_tile(x, y, t)
+        if added:
+            self.updates.append((x, y, t))
 
     def update_clients(self):
         for client in self.clients:
