@@ -11,12 +11,9 @@ class CommandCode(object):
     MOVE_REQUEST    = 1001
     MAP_UPDATE      = 1002
 
-
 # Class with codes for each unique Player type
 class PlayerCodes(object):
     DISRUPTOR_TEAM_A    = 0
     RUNNER_TEAM_A       = 1
     DISRUPTOR_TEAM_B    = 2
-    RUNNER_TEAMB        = 3
-
-
+    RUNNER_TEAM_B       = 3

@@ -24,8 +24,12 @@ g_connections = []
 g_server_enabled = False
 
 def main():
+    global g_server_enabled
+
     connection_thread = threading.Thread(target=connection_loop)
+    connection_thread.daemon = True
     connection_status = threading.Thread(target=sample_connection_count)
+    connection_status.daemon = True
     print "Starting server accept thread"
     connection_thread.start()
     connection_status.start()
@@ -40,7 +44,7 @@ def game_loop(game_state):
     while g_server_enabled and game_running:
         game_state.tick()
         time.sleep(TICK_INTERVAL)
-        
+
 
 def sample_connection_count():
     while len(g_connections) < MAX_CLIENTS:
@@ -49,7 +53,7 @@ def sample_connection_count():
 
 def connect_players():
     while len(g_connections) < MAX_CLIENTS:
-        time.sleep(0.25)    
+        time.sleep(0.25)
     return True
 
 
