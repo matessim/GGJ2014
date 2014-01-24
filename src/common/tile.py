@@ -3,15 +3,13 @@ from pygame.sprite import Sprite
 from consts import *
 
 class TileMeta(type):
-
     def __new__(mcs, name, bases, d):
         new_tile_type = type.__new__(mcs, name, bases, d)
         if not hasattr(new_tile_type, '_tile_types'):
             new_tile_type._tile_types = []
-        if not hasattr(new_tile_type, 'solid'):
-            new_tile_type.solid = False
-        if not hasattr(new_tile_type, 'deadly'):
-            new_tile_type.deadly = False
+        for attr in ['solid', 'deadly', 'win']:
+            if not hasattr(new_tile_type, attr):
+                setattr(new_tile_type, attr, False)
         new_tile_type._tile_types.append(new_tile_type)
         return new_tile_type
 
