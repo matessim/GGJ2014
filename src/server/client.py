@@ -13,5 +13,4 @@ class NetworkClient(object):
 		return self._client_socket
 
 	def __repr__(self):
-		print self._host
 		return "<Client %s:%d>" % (self._host[0], self._host[1])
