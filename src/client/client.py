@@ -7,6 +7,7 @@ import pygame as pg
 from pygame.locals import *
 from pygame.sprite import Sprite, Group, spritecollide
 
+from screen_log import *
 from common.player import Player
 from common.consts import *
 from common.world import *
@@ -47,6 +48,9 @@ class Camera(object):
 
 class ClientGame(object):
     def __init__(self, ip):
+        self.screen_log = ScreenLog(8)
+        self.screen_log.log("hello World!")
+        self.screen_log.log("hello Sample for Joseph!")
         self.player_a = Player(RED)
         self.player_b = Player(BLUE)
         self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
@@ -90,7 +94,15 @@ class ClientGame(object):
             self.screen.blit(self.player_b.image,
                     self.camera.to_local(self.player_b.rect))
             self.world.draw(self.screen, self.camera)
+            self.refresh_log()
             pg.display.flip()
+
+    def refresh_log(self):
+        font = pg.font.SysFont('monospace', 15)
+        init_y = 30
+        for line in self.screen_log.get_logs():
+            self.screen.blit(font.render(line, 1,  (255,255, 255)), (15, 20 + init_y))
+            init_y += 15
 
     def update_camera(self):
         if self.role in [DISRUPTOR_TEAM_A, DISRUPTOR_TEAM_B]:
