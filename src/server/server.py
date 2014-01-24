@@ -32,6 +32,7 @@ class ServerGame(object):
 
     def run(self):
         self.connect_players()
+        self.start_game()
         while True:
             CLOCK.tick(FPS)
             self.get_actions()
@@ -39,6 +40,10 @@ class ServerGame(object):
             self.player_b.update(self.world)
             self.update_clients()
 
+    def start_game(self):
+        for client in self.clients:
+            print "Sent start game to client!"
+            client.send_data({'type' : START_GAME, 'role' : client.role})
 
     def connect_players(self):
         role_giver = self.role_distributor()
@@ -72,7 +77,7 @@ class ServerGame(object):
             player = self.player_b
         else:
             return
-        
+
         if event['direction'] == LEFT:
             player.walking_left = event['pressed']
         elif event['direction'] == RIGHT:

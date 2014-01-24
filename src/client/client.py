@@ -44,6 +44,8 @@ class ClientGame(object):
         s = socket.socket()
         s.connect((ip, SERVER_PORT))
         self.server = ServerConnection(s)
+        self.server.wait_begin()
+        print "Connected!"
 
     def run(self):
         while True:

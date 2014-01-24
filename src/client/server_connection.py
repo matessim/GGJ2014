@@ -12,6 +12,14 @@ class ServerConnection(Connection):
     def __repr__(self):
         return "<Server>"
 
+    def wait_begin(self):
+        while True:
+            begin_message = self.get_data()
+            for m in begin_message:
+                if m['type'] == START_GAME:
+                    self._role = m['role']
+                    return
+
     def move(self, pressed, direction):
         self.send_data({'type': MOVE, 'direction': direction,
             'pressed': pressed})
