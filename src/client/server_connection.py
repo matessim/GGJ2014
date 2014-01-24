@@ -18,9 +18,12 @@ class ServerConnection(Connection):
     def add_tile(self, x, y, t):
         self.send_data({'type': ADD_ITEM, 'x': x, 'y': y, 't': t})
 
-    def get_update(self, player, world):
+    def get_update(self, players, world):
+        player_a, player_b = players
         for event in self.get_events():
-            player.rect.x = event['player']['x']
-            player.rect.y = event['player']['y']
+            player_a.rect.x = event['player_one']['x']
+            player_a.rect.y = event['player_one']['y']
+            player_b.rect.x = event['player_two']['x']
+            player_b.rect.y = event['player_two']['y']
             for x, y, t in event['updates']:
                 world.add_tile(x, y, t)
