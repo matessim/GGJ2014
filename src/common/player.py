@@ -35,8 +35,8 @@ class Player(Sprite):
 
         stuck = False
 
-        out_of_bounds = (self.rect.bottom >= HEIGHT or self.rect.top < 0)
-        out_of_bounds |= (self.rect.right >= WIDTH or self.rect.left < 0)
+        out_of_bounds = (self.rect.bottom > WORLD_HEIGHT or self.rect.top < 0)
+        out_of_bounds |= (self.rect.right > WORLD_WIDTH or self.rect.left < 0)
 
         if out_of_bounds:
             self.die()
@@ -67,6 +67,7 @@ class Player(Sprite):
                         y_update -= y_direction
                 if x_update != 0:
                     self.rect.move_ip(x_direction, 0)
+
                     if any(i.solid for i in pg.sprite.spritecollide(self, world, False)):
                         x_update = 0
                         self.dx = 0

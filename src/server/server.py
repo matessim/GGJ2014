@@ -26,12 +26,13 @@ class ServerGame(object):
     def __init__(self):
         self.player_a = Player(BLACK)
         self.player_b = Player(BLACK)
-        self.world = World(WIDTH/T_P, HEIGHT/T_P)
+        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
         self.clients = []
         self.updates = []
 
     def run(self):
         self.connect_players()
+        self.start_game()
         while True:
             CLOCK.tick(FPS)
             self.get_actions()
@@ -39,6 +40,10 @@ class ServerGame(object):
             self.player_b.update(self.world)
             self.update_clients()
 
+    def start_game(self):
+        for client in self.clients:
+            print "Sent start game to client!"
+            client.send_data({'type' : START_GAME, 'role' : client.role})
 
     def connect_players(self):
         role_giver = self.role_distributor()

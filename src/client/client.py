@@ -27,11 +27,29 @@ class Camera(object):
     def to_global(self, pos):
         return (pos[0] + self.x, pos[1] + self.y)
 
+    def set_x_y(self, x, y):
+        self.x = x
+        self.y = y
+        if self.x < 0:
+            self.x = 0
+        elif self.x > WORLD_WIDTH - WIDTH:
+            self.x = WORLD_WIDTH - WIDTH
+        if self.y < 0:
+            self.y = 0
+        elif self.y > WORLD_HEIGHT - HEIGHT:
+            self.y = WORLD_HEIGHT - HEIGHT
+
+    def add_x_offset(self, off):
+        self.set_x_y(self.x + off, self.y)
+
+    def add_y_offset(self, off):
+        self.set_x_y(self.x, self.y + off)
+
 class ClientGame(object):
     def __init__(self, ip):
         self.player_a = Player(RED)
         self.player_b = Player(BLUE)
-        self.world = World(WIDTH/T_P, HEIGHT/T_P)
+        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
         self.camera = Camera(0, 0)
         self.screen = pg.display.set_mode(SIZE)
         self.mouse_button_pressed = False
@@ -44,6 +62,8 @@ class ClientGame(object):
         s = socket.socket()
         s.connect((ip, SERVER_PORT))
         self.server = ServerConnection(s)
+        self.role = self.server.wait_for_role()
+        print "Connected!"
 
     def run(self):
         while True:
@@ -63,6 +83,7 @@ class ClientGame(object):
                 self.last_keys = my_keys
 
             self.server.get_update([self.player_a, self.player_b], self.world)
+            self.update_camera()
             self.screen.fill(BLACK)
             self.screen.blit(self.player_a.image,
                     self.camera.to_local(self.player_a.rect))
@@ -70,6 +91,26 @@ class ClientGame(object):
                     self.camera.to_local(self.player_b.rect))
             self.world.draw(self.screen, self.camera)
             pg.display.flip()
+
+    def update_camera(self):
+        if self.role in [DISRUPTOR_TEAM_A, DISRUPTOR_TEAM_B]:
+            pressed = pg.key.get_pressed()
+            if pressed[K_a]:
+                self.camera.add_x_offset(-CAMERA_SPEED)
+            if pressed[K_d]:
+                self.camera.add_x_offset(CAMERA_SPEED)
+            if pressed[K_w]:
+                self.camera.add_y_offset(-CAMERA_SPEED)
+            if pressed[K_s]:
+                self.camera.add_y_offset(CAMERA_SPEED)
+        else:
+            if self.role == RUNNER_TEAM_A:
+                center = self.player_a.rect.center
+            else:
+                center = self.player_b.rect.center
+
+            self.camera.set_x_y(center[0] - (WIDTH / 2), center[1] - (WIDTH / 2))
+
 
     def handle_events(self):
         for event in pg.event.get():
