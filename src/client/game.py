@@ -1,10 +1,15 @@
-import sys
+import sys, os
+print __file__
+__file_dir__ = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0, os.path.abspath(os.path.join(__file_dir__, '..')))
+
 import pygame as pg
 from pygame.locals import *
 from pygame.sprite import Sprite, Group, spritecollide
-from player import Player
-from consts import *
-from world import *
+
+from common.player import Player
+from common.consts import *
+from common.world import *
 
 pg.init()
 

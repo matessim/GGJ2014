@@ -30,5 +30,3 @@ class Player(Sprite):
     def jump(self):
         if self.dy == 0:
             self.dy = -20
-
-
