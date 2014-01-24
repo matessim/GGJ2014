@@ -9,9 +9,5 @@ Data Structure is JSON with the following required fields always in it:cc
 
 Basic JSON Fields:
 Name 			Type		Description
-command_code		uint32		Enum code representing what this message is (ex. Player action, server related message, game start)
-
-
-
-
+type		uint32		Enum code representing what this message is (ex. Player action, server related message, game start)
 

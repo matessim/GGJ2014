@@ -1,8 +1,8 @@
 import sys, os
-print __file__
 __file_dir__ = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(__file_dir__, '..')))
 
+import socket
 import pygame as pg
 from pygame.locals import *
 from pygame.sprite import Sprite, Group, spritecollide
@@ -10,8 +10,11 @@ from pygame.sprite import Sprite, Group, spritecollide
 from common.player import Player
 from common.consts import *
 from common.world import *
+from server_connection import *
 
 pg.init()
+
+keyboard_actions = {K_LEFT: LEFT, K_RIGHT: RIGHT, K_UP: JUMP}
 
 class Camera(object):
     def __init__(self, x, y, w, h):
@@ -26,7 +29,7 @@ class Camera(object):
     def to_global(self, pos):
         return (pos[0] + self.x, pos[1] + self.y)
 
-class Game(object):
+class ClientGame(object):
     def __init__(self):
         self.player = Player()
         self.world = World(WIDTH/T_P, HEIGHT/T_P)
@@ -34,6 +37,13 @@ class Game(object):
         self.screen = pg.display.set_mode(SIZE)
         self.mouse_button_pressed = False
         self.mouse_pos = (0, 0)
+        self.connect_to_server()
+
+    def connect_to_server(self):
+        s = socket.socket()
+        #TODO: Dynamically configure
+        s.connect(('127.0.0.1', 1337))
+        self.server = ServerConnection(s)
 
     def run(self):
         while True:
@@ -44,12 +54,12 @@ class Game(object):
                 self.handle_mouse_press()
 
             pressed = pg.key.get_pressed()
-            self.player.walking_left = pressed[K_LEFT]
-            self.player.walking_right = pressed[K_RIGHT]
-            if pressed[K_UP] and self.player.on_ground(self.world):
-                self.player.jump()
 
-            self.player.update(self.world)
+            for key, action in keyboard_actions.items():
+                if (pressed[key]):
+                    self.server.move(action)
+
+            self.server.get_update(self.player, self.world)
             self.screen.fill(BLACK)
             self.screen.blit(self.player.image,
                     self.camera.to_local(self.player.rect))
@@ -71,7 +81,7 @@ class Game(object):
 
     def handle_mouse_press(self):
         x, y = self.camera.to_global(self.mouse_pos)
-        self.world.add_tile(x / T_P, y / T_P)
+        self.server.add_tile(x / T_P, y / T_P)
 
 if __name__ == "__main__":
-    Game().run()
+    ClientGame().run()
