@@ -4,6 +4,8 @@ from pygame.sprite import Sprite, Group, spritecollide
 from pygame import Rect
 from consts import *
 
+any = __builtins__.any
+
 class Player(Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
@@ -31,7 +33,7 @@ class Player(Sprite):
             if continue_y != 0:
                 self.rect.move_ip(0, sign_y)
                 col = pg.sprite.spritecollide(self, world, False)
-                if col or self.rect.bottom >= HEIGHT or self.rect.top < 0:
+                if any(t.solid in col) or self.rect.bottom >= HEIGHT or self.rect.top < 0:
                     self.dy = 0
                     continue_y = 0
                     self.rect.move_ip(0, -sign_y)
@@ -40,7 +42,7 @@ class Player(Sprite):
             if continue_x != 0:
                 self.rect.move_ip(sign_x, 0)
                 col = pg.sprite.spritecollide(self, world, False)
-                if col or self.rect.right >= WIDTH or self.rect.left < 0:
+                if any(t.solid in col) or self.rect.right >= WIDTH or self.rect.left < 0:
                     self.dx = 0
                     continue_x = 0
                     self.rect.move_ip(-sign_x, 0)
