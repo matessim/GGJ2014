@@ -20,3 +20,7 @@ class GameClient(object):
 	def __repr__(self):
 		return "<Client %s:%d>" % (self._host[0], self._host[1])
 
+
+	# So we can select on the object
+	def fileno(self):
+		return self._client_socket.fileno()
