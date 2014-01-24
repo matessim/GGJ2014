@@ -7,6 +7,7 @@ import threading
 import time
 
 from client import *
+from gamestate import *
 
 # Listen on all connections
 SERVER_IP   = '0.0.0.0'
@@ -14,6 +15,9 @@ SERVER_PORT = 1337
 SERVER_ADDR = (SERVER_IP, SERVER_PORT)
 
 MAX_CLIENTS = 4
+
+# Tick 60 times a second
+TICK_INTERVAL = 1.0 / 60
 
 g_connections = []
 
@@ -28,15 +32,15 @@ def main():
     connect_players()
     print "4 Players connected! game loop!"
     g_server_enabled = True
-    game_loop()
+    gstate = GameState(g_connections)
+    game_loop(gstate)
 
-def game_loop():
-    while g_server_enabled:
-        tick_players(g_connections)
+def game_loop(game_state):
+    game_running = game_state.running()
+    while g_server_enabled and game_running:
+        game_state.tick()
+        time.sleep(TICK_INTERVAL)
         
-def tick_players(players):
-    for player in players:
-        player.tick()
 
 def sample_connection_count():
     while len(g_connections) < MAX_CLIENTS:
