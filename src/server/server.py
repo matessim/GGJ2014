@@ -24,7 +24,8 @@ pg.init()
 
 class ServerGame(object):
     def __init__(self):
-        self.player = Player()
+        self.player_a = Player()
+        self.player_b = Player()
         self.world = World(WIDTH/T_P, HEIGHT/T_P)
         self.clients = []
         self.updates = []
@@ -34,18 +35,20 @@ class ServerGame(object):
         while True:
             CLOCK.tick(FPS)
             self.get_actions()
-            self.player.update(self.world)
+            self.player_a.update(self.world)
+            self.player_b.update(self.world)
             self.update_clients()
 
+
     def connect_players(self):
+        role_giver = self.role_distributor()
         sock = socket.socket()
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(SERVER_ADDR)
         sock.listen(MAX_CLIENTS)
         while len(self.clients) < MAX_CLIENTS:
             host, endpoint = sock.accept()
-            # TODO: Change 0 to role
-            new_client = ClientConnection(host, endpoint, 0)
+            new_client = ClientConnection(host, endpoint, role_giver.next())
             print "Accepted new client:", repr(new_client)
             self.clients.append(new_client)
 
@@ -63,26 +66,45 @@ class ServerGame(object):
                     raise e
 
     def handle_move(self, client, event):
+        if client.role == RUNNER_TEAM_A:
+            player = self.player_a
+        elif client.role == RUNNER_TEAM_B:
+            player = self.player_b
+        else:
+            return
         if event['direction'] == LEFT:
-            self.player.walking_left = event['pressed']
+            player.walking_left = event['pressed']
         elif event['direction'] == RIGHT:
-            self.player.walking_right = event['pressed']
+            player.walking_right = event['pressed']
         elif event['direction'] == JUMP:
-            if event['pressed'] and self.player.on_ground(self.world):
-                self.player.jump()
+            if event['pressed'] and player.on_ground(self.world):
+                player.jump()
 
     def handle_add_item(self, client, event):
+        if client.role != DISRUPTOR_TEAM_A and client.role != DISRUPTOR_TEAM_B:
+            return
         x = event['x']
         y = event['y']
-        self.world.add_tile(x, y)
-        self.updates.append((x,y))
+        t = event['t']
+        added = self.world.add_tile(x, y, t)
+        if added:
+            self.updates.append((x, y, t))
 
     def update_clients(self):
-        player_rect = self.player.rect
+        p1 = self.player_a.rect
+        p2 = self.player_b.rect
         for client in self.clients:
-            client.send_data({'player': {'x': player_rect.x, 'y': player_rect.y},
+            client.send_data({'player_one': {'x': p1.x, 'y': p1.y},
+                'player_two' : {'x': p2.x, 'y': p2.y},
                 'updates': self.updates})
         self.updates = []
+
+    def role_distributor(self):
+        yield DISRUPTOR_TEAM_A
+        yield RUNNER_TEAM_A
+        yield DISRUPTOR_TEAM_B
+        yield RUNNER_TEAM_A
+
 
 if __name__ == '__main__':
     ServerGame().run()

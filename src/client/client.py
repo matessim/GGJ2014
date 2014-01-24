@@ -29,13 +29,15 @@ class Camera(object):
 
 class ClientGame(object):
     def __init__(self, ip):
-        self.player = Player()
+        self.player_a = Player()
+        self.player_b = Player()
         self.world = World(WIDTH/T_P, HEIGHT/T_P)
         self.camera = Camera(0, 0)
         self.screen = pg.display.set_mode(SIZE)
         self.mouse_button_pressed = False
         self.mouse_pos = (0, 0)
         self.connect_to_server(ip)
+        self.cur_tile = 1
 
     def connect_to_server(self, ip):
         s = socket.socket()
@@ -55,10 +57,12 @@ class ClientGame(object):
             for key, action in keyboard_actions.items():
                 self.server.move(pressed[key], action)
 
-            self.server.get_update(self.player, self.world)
+            self.server.get_update([self.player_a, self.player_b], self.world)
             self.screen.fill(BLACK)
-            self.screen.blit(self.player.image,
-                    self.camera.to_local(self.player.rect))
+            self.screen.blit(self.player_a.image,
+                    self.camera.to_local(self.player_a.rect))
+            self.screen.blit(self.player_b.image,
+                    self.camera.to_local(self.player_b.rect))
             self.world.draw(self.screen, self.camera)
             pg.display.flip()
 
@@ -74,10 +78,15 @@ class ClientGame(object):
                 self.mouse_pos = event.pos
             elif event.type == MOUSEBUTTONUP:
                 self.mouse_button_pressed = False
+            elif event.type == KEYDOWN:
+                if event.key == K_1:
+                    self.cur_tile = 1
+                elif event.key == K_2:
+                    self.cur_tile = 2
 
     def handle_mouse_press(self):
         x, y = self.camera.to_global(self.mouse_pos)
-        self.server.add_tile(x / T_P, y / T_P)
+        self.server.add_tile(x / T_P, y / T_P, self.cur_tile)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
