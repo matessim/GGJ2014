@@ -1,0 +1,9 @@
+Jacques
+========
+
+Jacques is a game in which two teams(A,B) of two players (Disruptor and Runner) compete to have their Runner finish first.
+
+The job of the disruptor is to intelligently place obstacles to slow down the progress of the opponent' team runner, some obstacles
+effect both teams runners while some only effect the other team's runner.
+
+
