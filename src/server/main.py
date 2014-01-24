@@ -26,7 +26,7 @@ pg.init()
 SERVER_IP   = '0.0.0.0'
 SERVER_PORT = 1337
 SERVER_ADDR = (SERVER_IP, SERVER_PORT)
-MAX_CLIENTS = 1
+MAX_CLIENTS = 2
 
 class ServerGame(object):
     def __init__(self):
@@ -37,13 +37,22 @@ class ServerGame(object):
 
     def run(self):
         self.connect_players()
+        self.delegate_roles()
         while True:
             CLOCK.tick(FPS)
             self.get_actions()
             self.player.update(self.world)
             self.update_clients()
 
+    def delegate_roles(self):
+        if len(self.clients) != MAX_CLIENTS:
+            raise Exception("game roles called on an unexpected number of participants")
+
+        player, disruptor = self.clients
+        
+
     def connect_players(self):
+        role_giver = self.role_distributor()
         sock = socket.socket()
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(SERVER_ADDR)
@@ -51,7 +60,7 @@ class ServerGame(object):
         while len(self.clients) < MAX_CLIENTS:
             host, endpoint = sock.accept()
             # TODO: Change 0 to role
-            new_client = GameClient(host, endpoint, 0)
+            new_client = GameClient(host, endpoint, role_giver.next())
             print "Accepted new client:", repr(new_client)
             self.clients.append(new_client)
 
@@ -69,6 +78,8 @@ class ServerGame(object):
                     raise e
 
     def handle_move(self, client, event):
+        if client.role != RUNNER_TEAM_A:
+            return
         if event['direction'] == LEFT:
             self.player.walking_left = event['pressed']
         elif event['direction'] == RIGHT:
@@ -78,6 +89,8 @@ class ServerGame(object):
                 self.player.jump()
 
     def handle_add_item(self, client, event):
+        if client.role != DISRUPTOR_TEAM_A:
+            return
         x = event['x']
         y = event['y']
         self.world.add_tile(x, y)
@@ -88,6 +101,11 @@ class ServerGame(object):
             client.send_data({'player': {'x': self.player.rect.x, 'y': self.player.rect.y},
                 'updates': self.updates})
         self.updates = []
+
+    def role_distributor(self):
+        yield DISRUPTOR_TEAM_A
+        yield RUNNER_TEAM_A
+
 
 if __name__ == '__main__':
     ServerGame().run()
