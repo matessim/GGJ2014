@@ -30,6 +30,7 @@ class Player(Sprite):
         y_update = self.dy
 
         self.rect.move_ip(x_update, y_update)
+
         collisions = pg.sprite.spritecollide(self, world, False)
 
         stuck = False
@@ -59,7 +60,6 @@ class Player(Sprite):
                 if y_update != 0:
                     self.rect.move_ip(0, y_direction)
                     if any(i.solid for i in pg.sprite.spritecollide(self, world, False)):
-
                         y_update = 0
                         self.dy = 0
                         self.rect.move_ip(0, -y_direction)
@@ -69,7 +69,6 @@ class Player(Sprite):
                     self.rect.move_ip(x_direction, 0)
 
                     if any(i.solid for i in pg.sprite.spritecollide(self, world, False)):
-
                         x_update = 0
                         self.dx = 0
                         self.rect.move_ip(-x_direction, 0)
