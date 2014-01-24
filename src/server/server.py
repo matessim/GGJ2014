@@ -13,20 +13,14 @@ from common.player import Player
 from common.consts import *
 from common.world import *
 
+import select
 import socket
 import threading
 import time
-import select
 
 from client_connection import *
 
 pg.init()
-
-# Listen on all connections
-SERVER_IP   = '0.0.0.0'
-SERVER_PORT = 1337
-SERVER_ADDR = (SERVER_IP, SERVER_PORT)
-MAX_CLIENTS = 1
 
 class ServerGame(object):
     def __init__(self):
@@ -51,14 +45,14 @@ class ServerGame(object):
         while len(self.clients) < MAX_CLIENTS:
             host, endpoint = sock.accept()
             # TODO: Change 0 to role
-            new_client = GameClient(host, endpoint, 0)
+            new_client = ClientConnection(host, endpoint, 0)
             print "Accepted new client:", repr(new_client)
             self.clients.append(new_client)
 
     def get_actions(self):
         clients_with_actions = select.select(self.clients, [], [], 0)
         for client in clients_with_actions[0]:
-            for event in client.get_events():
+            for event in client.get_data():
                 try:
                     if event['type'] == MOVE:
                         self.handle_move(client, event)
@@ -84,8 +78,9 @@ class ServerGame(object):
         self.updates.append((x,y))
 
     def update_clients(self):
+        player_rect = self.player.rect
         for client in self.clients:
-            client.send_data({'player': {'x': self.player.rect.x, 'y': self.player.rect.y},
+            client.send_data({'player': {'x': player_rect.x, 'y': player_rect.y},
                 'updates': self.updates})
         self.updates = []
 

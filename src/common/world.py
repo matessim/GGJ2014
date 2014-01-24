@@ -25,7 +25,7 @@ class World(object):
 
     def iter_visible(self, camera):
         ul_t = (camera.x / T_P, camera.y / T_P)
-        dr_t = ((camera.x + camera.w) / T_P, (camera.y + camera.h) / T_P)
+        dr_t = ((camera.x + WIDTH) / T_P, (camera.y + HEIGHT) / T_P)
         for tile_x in xrange(ul_t[0], dr_t[0]+1):
             for tile_y in xrange(ul_t[1], dr_t[1]+1):
                 if self.tiles.has_key((tile_x, tile_y)):

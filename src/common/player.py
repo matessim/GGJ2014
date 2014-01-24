@@ -18,34 +18,34 @@ class Player(Sprite):
 
     def update(self, world):
         self.dy += GRAVITY
-        ac_dx = self.dx + self.speed*(self.walking_right - self.walking_left)
-        ac_dy = self.dy
+        x_update = self.dx + self.speed*(self.walking_right - self.walking_left)
+        y_update = self.dy
 
-        sign_x = 2*(ac_dx > 0) - 1
-        sign_y = 2*(ac_dy > 0) - 1
+        self.rect.move_ip(x_update, y_update)
+        if pg.sprite.spritecollide(self, world, False):
+            # We hit something. Let's undo and move a pixel at a time
+            # in each direction until we're stuck
+            self.rect.move_ip(-x_update, -y_update)
+            x_direction = 1 if x_update > 0 else -1
+            y_direction = 1 if y_update > 0 else -1
 
-        continue_x = abs(ac_dx)
-        continue_y = abs(ac_dy)
-
-        while continue_x or continue_y:
-            if continue_y != 0:
-                self.rect.move_ip(0, sign_y)
-                col = pg.sprite.spritecollide(self, world, False)
-                if col or self.rect.bottom >= HEIGHT or self.rect.top < 0:
-                    self.dy = 0
-                    continue_y = 0
-                    self.rect.move_ip(0, -sign_y)
-                else:
-                    continue_y -= 1
-            if continue_x != 0:
-                self.rect.move_ip(sign_x, 0)
-                col = pg.sprite.spritecollide(self, world, False)
-                if col or self.rect.right >= WIDTH or self.rect.left < 0:
-                    self.dx = 0
-                    continue_x = 0
-                    self.rect.move_ip(-sign_x, 0)
-                else:
-                    continue_x -= 1
+            while x_update != 0 or y_update != 0:
+                if y_update != 0:
+                    self.rect.move_ip(0, y_direction)
+                    if pg.sprite.spritecollide(self, world, False):
+                        y_update = 0
+                        self.dy = 0
+                        self.rect.move_ip(0, -y_direction)
+                    else:
+                        y_update -= y_direction
+                if x_update != 0:
+                    self.rect.move_ip(x_direction, 0)
+                    if pg.sprite.spritecollide(self, world, False):
+                        x_update = 0
+                        self.dx = 0
+                        self.rect.move_ip(-x_direction, 0)
+                    else:
+                        x_update -= x_direction
 
     def on_ground(self, world):
         self.rect.move_ip(0, 1)

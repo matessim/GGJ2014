@@ -12,11 +12,11 @@ class Connection(object):
         data = json.dumps(obj)
         return self._send_frame(data)
 
-    def get_events(self):
-        events = []
+    def get_data(self):
+        data = []
         while select.select([self], [], [], 0)[0]:
-            events.append(json.loads(self._get_frame()))
-        return events
+            data.append(json.loads(self._get_frame()))
+        return data
 
     def _get_frame(self):
         read_len = struct.unpack(LENGTH_FORMAT, self._socket.recv(UINT_LEN_BYTES))[0]
