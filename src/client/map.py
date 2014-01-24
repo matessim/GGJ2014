@@ -24,10 +24,13 @@ class Map(object):
             for tile_y in xrange(ul_t[1], dr_t[1]+1):
                 if self.m.has_key((tile_x, tile_y)):
                     tile = self.m[(tile_x, tile_y)]
-                    surface.blit(tile.image, camera.apply(tile.rect))
+                    surface.blit(tile.image, camera.to_local(tile.rect))
 
     def pixel_to_tile(self, p_x, p_y):
         return (p_x / T_P, p_y / T_P)       
+
+    def add_tile(self, t_x, t_y):
+        self.m[(t_x, t_y)] = Ground(t_x, t_y)
 
 class Tile(Sprite):
 
@@ -52,8 +55,11 @@ class Camera(object):
         self.x = x
         self.y = y
 
-    def apply(self, rect):
-        return (rect[0] - self.x, rect[1] - self.y)
+    def to_local(self, pos):
+        return (pos[0] - self.x, pos[1] - self.y)
+
+    def to_global(self, pos):
+        return (pos[0] + self.x, pos[1] + self.y)
         
 
  
@@ -64,6 +70,8 @@ HEIGHT = 480
 window = pg.display.set_mode((WIDTH, HEIGHT))
 world_map = Map(64, 48)
 camera = Camera(0, 0)
+mouse_x, mouse_y = 0, 0
+mouse_button_pressed = False
 
 while True:
     window.fill(WHITE)
@@ -74,9 +82,23 @@ while True:
         if event.type == QUIT:
             pg.quit()
             sys.exit()
+        elif event.type == MOUSEMOTION:
+            mouse_x, mouse_y = event.pos
+        elif event.type == MOUSEBUTTONDOWN:
+            mouse_button_pressed = True
+        elif event.type == MOUSEBUTTONUP:
+            mouse_button_pressed = False
+
+    if mouse_button_pressed:
+        mouse_x, mouse_y = event.pos
+        global_x, global_y = camera.to_global((mouse_x, mouse_y))
+        world_map.add_tile(global_x / T_P, global_y / T_P)
+
+
+
 
     pg.display.flip()
-    fpsClock.tick(30)
+    fpsClock.tick(120)
 
 
     
