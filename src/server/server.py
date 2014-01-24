@@ -13,20 +13,14 @@ from common.player import Player
 from common.consts import *
 from common.world import *
 
+import select
 import socket
 import threading
 import time
-import select
 
 from client_connection import *
 
 pg.init()
-
-# Listen on all connections
-SERVER_IP   = '0.0.0.0'
-SERVER_PORT = 1337
-SERVER_ADDR = (SERVER_IP, SERVER_PORT)
-MAX_CLIENTS = 4
 
 class ServerGame(object):
     def __init__(self):
@@ -44,7 +38,7 @@ class ServerGame(object):
             self.player_a.update(self.world)
             self.player_b.update(self.world)
             self.update_clients()
-        
+
 
     def connect_players(self):
         role_giver = self.role_distributor()
@@ -54,15 +48,14 @@ class ServerGame(object):
         sock.listen(MAX_CLIENTS)
         while len(self.clients) < MAX_CLIENTS:
             host, endpoint = sock.accept()
-            # TODO: Change 0 to role
-            new_client = GameClient(host, endpoint, role_giver.next())
+            new_client = ClientConnection(host, endpoint, role_giver.next())
             print "Accepted new client:", repr(new_client)
             self.clients.append(new_client)
 
     def get_actions(self):
         clients_with_actions = select.select(self.clients, [], [], 0)
         for client in clients_with_actions[0]:
-            for event in client.get_events():
+            for event in client.get_data():
                 try:
                     if event['type'] == MOVE:
                         self.handle_move(client, event)
@@ -98,9 +91,12 @@ class ServerGame(object):
             self.updates.append((x, y, t))
 
     def update_clients(self):
+        p1 = self.player_a.rect
+        p2 = self.player_b.rect
         for client in self.clients:
-            client.send_data({'player_one': {'x': self.player_a.rect.x, 'y': self.player_a.rect.y},
-                'player_two' : {'x': self.player_b.rect.x, 'y': self.player_b.rect.y}, 'updates': self.updates})
+            client.send_data({'player_one': {'x': p1.x, 'y': p1.y},
+                'player_two' : {'x': p2.x, 'y': p2.y},
+                'updates': self.updates})
         self.updates = []
 
     def role_distributor(self):

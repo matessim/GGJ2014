@@ -15,8 +15,8 @@ LEFT  = 0
 RIGHT = 1
 JUMP  = 2
 
+# Size of screen and tiles
 SIZE = WIDTH, HEIGHT = 640, 480
-# Size of tiles
 T_P = 10
 
 CLOCK = pg.time.Clock()
@@ -44,3 +44,9 @@ RUNNER_TEAM_B    = 3
 
 LENGTH_FORMAT = "<I"
 UINT_LEN_BYTES = 4
+
+# Listen on all connections
+SERVER_IP   = '0.0.0.0'
+SERVER_PORT = 1337
+SERVER_ADDR = (SERVER_IP, SERVER_PORT)
+MAX_CLIENTS = 4

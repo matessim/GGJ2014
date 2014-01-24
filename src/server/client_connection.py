@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(__file_dir__, '..')))
 
 from common.connection import Connection
 
-class GameClient(Connection):
+class ClientConnection(Connection):
     def __init__(self, client_socket, client_host, role):
         self._host = client_host
         self._socket = client_socket

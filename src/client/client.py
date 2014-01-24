@@ -17,11 +17,9 @@ pg.init()
 keyboard_actions = {K_LEFT: LEFT, K_RIGHT: RIGHT, K_UP: JUMP}
 
 class Camera(object):
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.w = w
-        self.h = h
 
     def to_local(self, pos):
         return (pos[0] - self.x, pos[1] - self.y)
@@ -30,21 +28,20 @@ class Camera(object):
         return (pos[0] + self.x, pos[1] + self.y)
 
 class ClientGame(object):
-    def __init__(self):
+    def __init__(self, ip):
         self.player_a = Player()
         self.player_b = Player()
         self.world = World(WIDTH/T_P, HEIGHT/T_P)
-        self.camera = Camera(0, 0, WIDTH, HEIGHT)
+        self.camera = Camera(0, 0)
         self.screen = pg.display.set_mode(SIZE)
         self.mouse_button_pressed = False
         self.mouse_pos = (0, 0)
-        self.connect_to_server()
+        self.connect_to_server(ip)
         self.cur_tile = 1
 
-    def connect_to_server(self):
+    def connect_to_server(self, ip):
         s = socket.socket()
-        #TODO: Dynamically configure
-        s.connect(('192.168.43.221', 1337))
+        s.connect((ip, SERVER_PORT))
         self.server = ServerConnection(s)
 
     def run(self):
@@ -92,4 +89,7 @@ class ClientGame(object):
         self.server.add_tile(x / T_P, y / T_P, self.cur_tile)
 
 if __name__ == "__main__":
-    ClientGame().run()
+    if len(sys.argv) < 2:
+        print "Usage: %s <server_ip>" % sys.argv[0]
+        sys.exit(1)
+    ClientGame(sys.argv[1]).run()

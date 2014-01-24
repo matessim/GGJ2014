@@ -13,17 +13,18 @@ class ServerConnection(Connection):
         return "<Server>"
 
     def move(self, pressed, direction):
-        self.send_data({'type': MOVE, 'direction': direction, 'pressed': pressed})
+        self.send_data({'type': MOVE, 'direction': direction,
+            'pressed': pressed})
 
     def add_tile(self, x, y, t):
         self.send_data({'type': ADD_ITEM, 'x': x, 'y': y, 't': t})
 
     def get_update(self, players, world):
         player_a, player_b = players
-        for event in self.get_events():
-            player_a.rect.x = event['player_one']['x']
-            player_a.rect.y = event['player_one']['y']
-            player_b.rect.x = event['player_two']['x']
-            player_b.rect.y = event['player_two']['y']
-            for x, y, t in event['updates']:
+        for state in self.get_data():
+            player_a.rect.x = state['player_one']['x']
+            player_a.rect.y = state['player_one']['y']
+            player_b.rect.x = state['player_two']['x']
+            player_b.rect.y = state['player_two']['y']
+            for x, y, t in state['updates']:
                 world.add_tile(x, y, t)
