@@ -31,6 +31,7 @@ class Ground(Tile):
     w = 1
     h = 1
     solid = True
+    cost = 1
     def __init__(self, x, y):
         Tile.__init__(self, x, y, GREEN)
 
@@ -38,5 +39,6 @@ class Bomb(Tile):
     w = 2
     h = 2
     deadly = True
+    cost = 3
     def __init__(self, x, y):
         Tile.__init__(self, x, y, RED)

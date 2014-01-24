@@ -23,8 +23,9 @@ T_P = 10
 
 CLOCK = pg.time.Clock()
 
-FPS     = 60
-GRAVITY = 1
+FPS               = 60
+FRAMES_PER_CREDIT = 2 * FPS
+GRAVITY           = 1
 
 # Messages Server -> Client
 

@@ -13,6 +13,7 @@ class Player(Sprite):
         pg.draw.circle(self.image, BLACK, (20, 20), 21, 2)
         self.rect = self.image.get_rect()
         self.speed = T_P / 2
+        self.credits = 0
         self.respawn()
 
     def respawn(self):
