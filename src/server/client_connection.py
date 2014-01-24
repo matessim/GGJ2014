@@ -9,7 +9,7 @@ class GameClient(Connection):
         self._host = client_host
         self._socket = client_socket
         self._role = role
- 
+ 	
     def __repr__(self):
         return "<Client %s:%d>" % (self._host[0], self._host[1])
 

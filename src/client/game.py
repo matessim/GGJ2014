@@ -31,7 +31,8 @@ class Camera(object):
 
 class ClientGame(object):
     def __init__(self):
-        self.player = Player()
+        self.player_a = Player()
+        self.player_b = Player()
         self.world = World(WIDTH/T_P, HEIGHT/T_P)
         self.camera = Camera(0, 0, WIDTH, HEIGHT)
         self.screen = pg.display.set_mode(SIZE)
@@ -58,10 +59,12 @@ class ClientGame(object):
             for key, action in keyboard_actions.items():
                 self.server.move(pressed[key], action)
 
-            self.server.get_update(self.player, self.world)
+            self.server.get_update([self.player_a, self.player_b], self.world)
             self.screen.fill(BLACK)
-            self.screen.blit(self.player.image,
-                    self.camera.to_local(self.player.rect))
+            self.screen.blit(self.player_a.image,
+                    self.camera.to_local(self.player_a.rect))
+            self.screen.blit(self.player_b.image,
+                    self.camera.to_local(self.player_b.rect))
             self.world.draw(self.screen, self.camera)
             pg.display.flip()
 
