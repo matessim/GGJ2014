@@ -29,9 +29,11 @@ class ServerConnection(Connection):
     def get_update(self, players, world):
         player_a, player_b = players
         for state in self.get_data():
-            player_a.rect.x = state['player_one']['x']
-            player_a.rect.y = state['player_one']['y']
-            player_b.rect.x = state['player_two']['x']
-            player_b.rect.y = state['player_two']['y']
+            player_a.rect.x  = state['player_one']['x']
+            player_a.rect.y  = state['player_one']['y']
+            player_a.credits = state['player_one']['credits']
+            player_b.rect.x  = state['player_two']['x']
+            player_b.rect.y  = state['player_two']['y']
+            player_b.credits = state['player_two']['credits']
             for x, y, t in state['updates']:
                 world.add_tile(x, y, t)

@@ -14,6 +14,9 @@ from common.world import *
 from server_connection import *
 
 pg.init()
+# Needs pg to be initialized before declaring
+FONT = pg.font.SysFont('monospace', 15)
+
 
 keyboard_actions = {K_LEFT: LEFT, K_RIGHT: RIGHT, K_UP: JUMP}
 
@@ -94,14 +97,20 @@ class ClientGame(object):
             self.screen.blit(self.player_b.image,
                     self.camera.to_local(self.player_b.rect))
             self.world.draw(self.screen, self.camera)
+            if self.role == DISRUPTOR_TEAM_A:
+                self.screen.blit(FONT.render("%d credits" % self.player_a.credits,
+                    1, (255, 255, 255)), (WIDTH - 100, 30))
+            if self.role == DISRUPTOR_TEAM_B:
+                self.screen.blit(FONT.render("%d credits" % self.player_b.credits,
+                    1, (255, 255, 255)), (WIDTH - 100, 30))
+
             self.refresh_log()
             pg.display.flip()
 
     def refresh_log(self):
-        font = pg.font.SysFont('monospace', 15)
         init_y = 30
         for line in self.screen_log.get_logs():
-            self.screen.blit(font.render(line, 1,  (255,255, 255)), (15, 20 + init_y))
+            self.screen.blit(FONT.render(line, 1,  (255,255, 255)), (15, 20 + init_y))
             init_y += 15
 
     def update_camera(self):
