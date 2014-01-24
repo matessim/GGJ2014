@@ -72,6 +72,7 @@ class ServerGame(object):
             player = self.player_b
         else:
             return
+        
         if event['direction'] == LEFT:
             player.walking_left = event['pressed']
         elif event['direction'] == RIGHT:
@@ -103,7 +104,7 @@ class ServerGame(object):
         yield DISRUPTOR_TEAM_A
         yield RUNNER_TEAM_A
         yield DISRUPTOR_TEAM_B
-        yield RUNNER_TEAM_A
+        yield RUNNER_TEAM_B
 
 
 if __name__ == '__main__':
