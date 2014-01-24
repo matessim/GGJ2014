@@ -17,6 +17,8 @@ MAX_CLIENTS = 4
 
 g_connections = []
 
+g_server_enabled = False
+
 def main():
 	connection_thread = threading.Thread(target=connection_loop)
 	connection_status = threading.Thread(target=sample_connection_count)
@@ -25,12 +27,16 @@ def main():
 	connection_status.start()
 	connect_players()
 	print "4 Players connected! game loop!"
+	g_server_enabled = True
 	game_loop()
 
 def game_loop():
-	while True:
-		print "Party party good good..."
-		time.sleep(5)
+	while g_server_enabled:
+		tick_players(g_connections)
+
+def tick_players(players):
+	for player in players:
+		player.tick()
 
 def sample_connection_count():
 	while len(g_connections) < MAX_CLIENTS:
@@ -49,7 +55,7 @@ def connection_loop():
 	sock.listen(MAX_CLIENTS)
 	while True:
 		host, endpoint = sock.accept()
-		new_client = NetworkClient(host, endpoint)
+		new_client = GameClient(host, endpoint)
 		print "Accepted new client:", repr(new_client)
 		g_connections.append(new_client)
 
