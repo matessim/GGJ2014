@@ -3,6 +3,8 @@ __file_dir__ = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(__file_dir__, '..')))
 
 import socket
+import time
+import json
 import pygame as pg
 from pygame.locals import *
 from pygame.sprite import Sprite, Group, spritecollide
@@ -166,9 +168,21 @@ class ClientGame(object):
                 # Restart game
                 elif event.key == KMOD_LCTRL | K_r:
                     self.suicide()
+                # Save game
+                elif event.key == KMOD_LCTRL | K_p:
+                    self.save_now()
 
     def suicide(self):
         self.server.send_data({'type' : SUICIDE})
+
+    # Format: [Tiles] - Tile -> (index (type), x, y)
+    def save_now(self):
+        print "Saving world..."
+        fname = SAVE_FILE_FORMAT + str(int(time.time())) + '.bin'
+        f = open(fname, 'wb')
+        f.write(json.dumps([(t.index ,t.rect.x, t.rect.y) for t in self.world if isinstance(t, Tile)]))
+        f.close()
+        print "World saved to ", fname
 
     def handle_mouse_press(self):
         x, y = self.camera.to_global(self.mouse_pos)
