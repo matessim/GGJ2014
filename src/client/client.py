@@ -75,7 +75,6 @@ class ClientGame(object):
     def run(self):
         while True:
             CLOCK.tick(FPS)
-            self.screen_log.log(repr(CLOCK.get_fps()))
             self.handle_events()
 
             if self.mouse_button_pressed:
@@ -98,6 +97,7 @@ class ClientGame(object):
             self.screen.blit(self.player_b.image,
                     self.camera.to_local(self.player_b.rect))
             self.world.draw(self.screen, self.camera)
+            self.draw_fps()
             if self.role == DISRUPTOR_TEAM_A:
                 self.screen.blit(FONT.render("%d credits" % self.player_a.credits,
                     1, (255, 255, 255)), (WIDTH - 100, 30))
@@ -113,6 +113,10 @@ class ClientGame(object):
         for line in self.screen_log.get_logs():
             self.screen.blit(FONT.render(line, 1,  (255,255, 255)), (15, 20 + init_y))
             init_y += 15
+
+    def draw_fps(self):
+        self.screen.blit(FONT.render("FPS: %f" % CLOCK.get_fps(), 1,
+            (255, 255, 255)), (WIDTH - 100, HEIGHT - 30))
 
     def update_camera(self):
         if self.role in [DISRUPTOR_TEAM_A, DISRUPTOR_TEAM_B]:
