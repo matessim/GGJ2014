@@ -58,7 +58,7 @@ class ClientGame(object):
         self.wins_a = 0
         self.wins_b = 0
         self.screen_log = ScreenLog(8)
-        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
+        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P, False)
         self.camera = Camera(0, 0)
         self.screen = pg.display.set_mode(SIZE)
         self.mouse_button_pressed = False

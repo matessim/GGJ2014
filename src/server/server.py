@@ -30,7 +30,7 @@ class ServerGame(object):
                     randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 8*T_P))
         self.player_a = Player(BLACK, a_spawn)
         self.player_b = Player(BLACK, b_spawn)
-        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
+        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P, True)
         self.updates = self.world.randomize_start()
         self.clients = []
         self.wins_a = 0
