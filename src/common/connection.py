@@ -1,6 +1,8 @@
-import select
 import json
+import pygame as pg
+import select
 import struct
+import sys
 from consts import *
 
 # Class representing a (network) client for the server
@@ -21,11 +23,16 @@ class Connection(object):
             yield json.loads(self._get_frame())
 
     def _get_frame(self):
-        read_len = struct.unpack(LENGTH_FORMAT, self._socket.recv(UINT_LEN_BYTES))[0]
-        data = ""
-        while len(data) < read_len:
-            data += self._socket.recv(read_len - len(data))
-        return data
+        try:
+            read_len = struct.unpack(LENGTH_FORMAT, self._socket.recv(UINT_LEN_BYTES))[0]
+            data = ""
+            while len(data) < read_len:
+                data += self._socket.recv(read_len - len(data))
+            return data
+        except:
+            # The other side hung up. Let's just quit.
+            pg.quit()
+            sys.exit()
 
     def _send_frame(self, data):
         try:
