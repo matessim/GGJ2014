@@ -22,7 +22,7 @@ class ServerConnection(Connection):
                     return m['role']
                 else:
                     raise Exception()
-            time.sleep(1)
+            time.sleep(0.25)
 
     def move(self, pressed, direction):
         self.send_data({'type': MOVE, 'direction': direction,

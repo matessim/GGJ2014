@@ -79,14 +79,10 @@ class ServerGame(object):
         clients_with_actions = select.select(self.clients, [], [], 0)
         for client in clients_with_actions[0]:
             for event in client.get_data():
-                try:
-                    if event['type'] == MOVE:
-                        self.handle_move(client, event)
-                    elif event['type'] == ADD_ITEM:
-                        self.handle_add_item(client, event)
-                except Exception as e:
-                    print "Error handling", event, "from", client
-                    raise e
+                if event['type'] == MOVE:
+                    self.handle_move(client, event)
+                elif event['type'] == ADD_ITEM:
+                    self.handle_add_item(client, event)
 
     def handle_move(self, client, event):
         if client.role == RUNNER_TEAM_A:
@@ -148,5 +144,7 @@ class ServerGame(object):
         yield DISRUPTOR_TEAM_B
         yield RUNNER_TEAM_B
 
+import cProfile
+
 if __name__ == '__main__':
-    ServerGame().run()
+    cProfile.run('ServerGame().run()', 'C:\Temp\log123.log')
