@@ -55,6 +55,8 @@ class ClientGame(object):
     def __init__(self, ip):
         self.player_a = Player(RED, (1, 1))
         self.player_b = Player(BLUE, (1, 1))
+        self.wins_a = 0
+        self.wins_b = 0
         self.screen_log = ScreenLog(8)
         self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
         self.camera = Camera(0, 0)
@@ -91,7 +93,13 @@ class ClientGame(object):
                         self.server.move(my_keys[key], action)
                 self.last_keys = my_keys
 
-            self.server.get_update([self.player_a, self.player_b], self.world)
+            update = self.server.get_update([self.player_a, self.player_b], self.world)
+            if update and update[0] == END_GAME:
+                self.wins_a = update[1]
+                self.wins_b = update[2]
+                self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
+                self.camera = Camera(0, 0)
+
             self.update_camera()
             self.screen.fill(WHITE)
             self.screen.blit(self.player_a.image,
@@ -100,6 +108,7 @@ class ClientGame(object):
                     self.camera.to_local(self.player_b.rect))
             self.world.draw(self.screen, self.camera)
             self.draw_fps()
+            self.draw_scores()
             if self.role == DISRUPTOR_TEAM_A:
                 self.screen.blit(FONT.render("%d credits" % self.player_a.credits,
                     1, BLACK), (WIDTH - 250, 30))
@@ -125,6 +134,12 @@ class ClientGame(object):
     def draw_fps(self):
         self.screen.blit(FONT.render("FPS: %f" % CLOCK.get_fps(), 1,
             BLACK), (WIDTH - 100, HEIGHT - 30))
+
+    def draw_scores(self):
+        self.screen.blit(FONT.render(repr(self.wins_a), 1,
+            RED), ((WIDTH / 2) - 20, 30))  
+        self.screen.blit(FONT.render(repr(self.wins_b), 1,
+            BLUE), ((WIDTH / 2) + 20, 30))
 
     def update_camera(self):
         if self.role in [DISRUPTOR_TEAM_A, DISRUPTOR_TEAM_B]:
