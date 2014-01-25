@@ -1,4 +1,5 @@
 import pygame as pg
+import os
 
 # Enum colors:
 WHITE  = pg.Color(255, 255, 255)
@@ -69,3 +70,6 @@ MAX_CLIENTS = 4
 CAMERA_SPEED = T_P
 
 END_GAME = 0
+
+SAVE_FILE_FORMAT = r"." + os.sep + 'savegame'
+

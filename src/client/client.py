@@ -3,6 +3,8 @@ __file_dir__ = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(__file_dir__, '..')))
 
 import socket
+import time
+import json
 import pygame as pg
 from pygame.locals import *
 from pygame.sprite import Sprite, Group, spritecollide
@@ -109,15 +111,15 @@ class ClientGame(object):
             self.draw_scores()
             if self.role == DISRUPTOR_TEAM_A:
                 self.screen.blit(FONT.render("%d credits" % self.player_a.credits,
-                    1, (0, 0, 0)), (WIDTH - 250, 30))
+                    1, BLACK), (WIDTH - 250, 30))
             if self.role == DISRUPTOR_TEAM_B:
                 self.screen.blit(FONT.render("%d credits" % self.player_b.credits,
-                    1, (0, 0, 0)), (WIDTH - 250, 30))
-            if self.role == DISRUPTOR_TEAM_B or self.role == DISRUPTOR_TEAM_A:
+                    1, BLACK), (WIDTH - 250, 30))
+            if self.role == DISRUPTOR_TEAM_A or self.role == DISRUPTOR_TEAM_B:
                 self.screen.blit(FONT.render("Current Tile: %s" % Tile.tile_types[self.cur_tile].__name__,
-                    1, (0, 0, 0)), (WIDTH - 250, 50))
+                    1, BLACK), (WIDTH - 250, 50))
                 self.screen.blit(FONT.render("Tile Cost: %d" % Tile.tile_types[self.cur_tile].cost,
-                    1, (0, 0, 0)), (WIDTH - 250, 70))
+                    1, BLACK), (WIDTH - 250, 70))
 
 
             self.refresh_log()
@@ -126,18 +128,18 @@ class ClientGame(object):
     def refresh_log(self):
         init_y = 30
         for line in self.screen_log.get_logs():
-            self.screen.blit(FONT.render(line, 1,  (0, 0, 0)), (15, 20 + init_y))
+            self.screen.blit(FONT.render(line, 1,  BLACK), (15, 20 + init_y))
             init_y += 15
 
     def draw_fps(self):
         self.screen.blit(FONT.render("FPS: %f" % CLOCK.get_fps(), 1,
-            (0, 0, 0)), (WIDTH - 100, HEIGHT - 30))
+            BLACK), (WIDTH - 100, HEIGHT - 30))
 
     def draw_scores(self):
         self.screen.blit(FONT.render(repr(self.wins_a), 1,
-            (255, 0, 0)), ((WIDTH / 2) - 20, 30))  
+            RED), ((WIDTH / 2) - 20, 30))  
         self.screen.blit(FONT.render(repr(self.wins_b), 1,
-            (0, 0, 255)), ((WIDTH / 2) + 20, 30))      
+            BLUE), ((WIDTH / 2) + 20, 30))
 
     def update_camera(self):
         if self.role in [DISRUPTOR_TEAM_A, DISRUPTOR_TEAM_B]:
@@ -181,9 +183,21 @@ class ClientGame(object):
                 # Restart game
                 elif event.key == KMOD_LCTRL | K_r:
                     self.suicide()
+                # Save game
+                elif event.key == KMOD_LCTRL | K_p:
+                    self.save_now()
 
     def suicide(self):
         self.server.send_data({'type' : SUICIDE})
+
+    # Format: [Tiles] - Tile -> (index (type), x, y)
+    def save_now(self):
+        print "Saving world..."
+        fname = SAVE_FILE_FORMAT + str(int(time.time())) + '.bin'
+        f = open(fname, 'wb')
+        f.write(json.dumps([(t.index ,t.rect.x, t.rect.y) for t in self.world if isinstance(t, Tile)]))
+        f.close()
+        print "World saved to ", fname
 
     def handle_mouse_press(self):
         x, y = self.camera.to_global(self.mouse_pos)
