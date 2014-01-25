@@ -100,7 +100,7 @@ class ClientGame(object):
                 self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
                 self.camera = Camera(0, 0)
                 self.player_a = Player(RED, update[3])
-                self.player_a = Player(BLUE, update[4])
+                self.player_b = Player(BLUE, update[4])
 
             self.update_camera()
             self.screen.fill(WHITE)

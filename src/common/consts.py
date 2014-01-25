@@ -72,5 +72,5 @@ CAMERA_SPEED = T_P
 
 END_GAME = 0
 
-SAVE_FILE_FORMAT = r"." + os.sep + 'savegame'
+SAVE_FILE_FORMAT = r".." + os.sep +'good-levels' + os.sep + 'savegame'
 

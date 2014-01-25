@@ -44,13 +44,15 @@ class ServerGame(object):
             result = raw_input(">>>")
             letter = result.split(' ')[0].lower()
             if letter == 'h':
-                print "h - help, l - load (map), r - restart"
+                print "h - help, l - load (map), r - restart, g - available savegames"
             if letter == 'l':
                 with self.run_lock:
                     self.load_level(result.split(' ')[1])    
             if letter == 'r':
                 with self.run_lock:
                     self.restart()
+            if letter == 'g':
+                print ' '.join([x for x in os.listdir('..' + os.sep + 'good-levels') if 'savegame' in x])
 
     def load_level(self, level_location):
         data = json.loads(open(level_location, 'rb').read().decode('zlib'))
