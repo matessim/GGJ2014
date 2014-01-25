@@ -137,20 +137,20 @@ class ClientGame(object):
 
     def draw_scores(self):
         self.screen.blit(FONT.render(repr(self.wins_a), 1,
-            RED), ((WIDTH / 2) - 20, 30))  
+            RED), ((WIDTH / 2) - 20, 30))
         self.screen.blit(FONT.render(repr(self.wins_b), 1,
             BLUE), ((WIDTH / 2) + 20, 30))
 
     def update_camera(self):
         if self.role in [DISRUPTOR_TEAM_A, DISRUPTOR_TEAM_B]:
             pressed = pg.key.get_pressed()
-            if pressed[K_a]:
+            if pressed[K_LEFT]:
                 self.camera.add_x_offset(-CAMERA_SPEED)
-            if pressed[K_d]:
+            if pressed[K_RIGHT]:
                 self.camera.add_x_offset(CAMERA_SPEED)
-            if pressed[K_w]:
+            if pressed[K_UP]:
                 self.camera.add_y_offset(-CAMERA_SPEED)
-            if pressed[K_s]:
+            if pressed[K_DOWN]:
                 self.camera.add_y_offset(CAMERA_SPEED)
         else:
             if self.role == RUNNER_TEAM_A:
@@ -176,17 +176,17 @@ class ClientGame(object):
             elif event.type == KEYDOWN:
                 if event.key == K_1:
                     self.cur_tile = Ground.index
-                
+
                 elif event.key == K_2:
                     self.cur_tile = Spike.index
-                
+
                 elif event.key == K_3:
                     self.cur_tile = Clear.index
-                
+
                 # Restart game
                 elif event.key == KMOD_LCTRL | K_r:
                     self.suicide()
-                
+
                 # Save game
                 elif event.key == KMOD_LCTRL | K_p:
                     self.save_now()

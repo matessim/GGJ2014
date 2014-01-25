@@ -25,9 +25,9 @@ pg.init()
 class ServerGame(object):
     def __init__(self):
         a_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
-                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
+                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 8*T_P))
         b_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
-                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
+                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 8*T_P))
         self.player_a = Player(BLACK, a_spawn)
         self.player_b = Player(BLACK, b_spawn)
         self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
@@ -108,7 +108,7 @@ class ServerGame(object):
                         self.player_a.toggle_developer()
                     elif client.role == DISRUPTOR_TEAM_B:
                         self.player_b.toggle_developer()
-                
+
 
     def handle_move(self, client, event):
         if client.role == RUNNER_TEAM_A:
