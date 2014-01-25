@@ -6,13 +6,14 @@ from consts import *
 
 
 class Player(Sprite):
-    def __init__(self, color):
+    def __init__(self, color, spawn_point):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((40, 40), pg.SRCALPHA)
         pg.draw.circle(self.image, color, (20, 20), 20)
         pg.draw.circle(self.image, BLACK, (20, 20), 21, 2)
         self.rect = self.image.get_rect()
         self.speed = T_P / 2
+        self.spawn_point = spawn_point
         self.credits = 0
         self.respawn()
 
@@ -21,7 +22,7 @@ class Player(Sprite):
         self.dy = 0
         self.walking_left = False
         self.walking_right = False
-        self.rect.x = self.rect.y = 0
+        self.rect.x, self.rect.y = self.spawn_point
 
     def update(self, world):
         self.dy += GRAVITY
@@ -49,6 +50,8 @@ class Player(Sprite):
                 return
             if block.solid:
                 stuck = True
+            if block.win:
+                return WIN
 
         if stuck:
             # We hit something. Let's undo and move a pixel at a time
