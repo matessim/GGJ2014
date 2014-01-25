@@ -42,12 +42,16 @@ class World(Group):
     def add_tile(self, t_x, t_y, t):
         tile_type = Tile.tile_types[t]
         tile = tile_type(t_x, t_y)
+        collisions = pg.sprite.spritecollide(tile, self, False)
         if tile_type == Clear:
-            if pg.sprite.spritecollide(tile, self, True):
-                return True
-            else:
+            if len(collisions) != 1:
                 return False
-        if pg.sprite.spritecollide(tile, self, False):
+            if isinstance(collisions[0], Gold):
+                return False
+            self.remove(collisions[0])
+            return True
+
+        elif collisions:
             return False
 
         self.add(tile)
