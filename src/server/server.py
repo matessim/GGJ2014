@@ -25,10 +25,10 @@ pg.init()
 class ServerGame(object):
     def __init__(self):
         w_tiles, h_tiles = WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P
-        a_spawn = (randrange(T_P, WORLD_WIDTH-3*T_P), 
-                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 3*T_P))
-        b_spawn = (randrange(T_P, WORLD_WIDTH-3*T_P), 
-                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 3*T_P))
+        a_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P), 
+                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
+        b_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P), 
+                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
         self.player_a = Player(BLACK, a_spawn)
         self.player_b = Player(BLACK, b_spawn)
         self.world = World(w_tiles, h_tiles)
@@ -119,11 +119,17 @@ class ServerGame(object):
         tile_type = Tile._tile_types[t]
         if tile_type.cost > player.credits:
             return
-        player.credits -= tile_type.cost
 
+        min_dist = tile_type.w * tile_type.h
+        a_x, a_y = self.player_a.rect.center
+        b_x, b_y = self.player_b.rect.center
+        if (((x+0.5)*T_P - a_x)**2 + ((y+0.5)*T_P - a_y)**2 < 9*T_P*T_P*min_dist  or \
+            ((x+0.5)*T_P - b_x)**2 + ((y+0.5)*T_P - b_y)**2 < 9*T_P*T_P*min_dist):
+            return
         added = self.world.add_tile(x, y, t)
         if added:
             self.updates.append((x, y, t))
+            player.credits -= tile_type.cost
 
     def update_clients(self):
         p1 = self.player_a.rect
