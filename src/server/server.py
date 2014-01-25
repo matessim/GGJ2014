@@ -25,8 +25,10 @@ pg.init()
 class ServerGame(object):
     def __init__(self):
         w_tiles, h_tiles = WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P
-        a_spawn = (randrange(1, w_tiles-1), randrange((h_tiles / 2) + 2, h_tiles - 1))
-        b_spawn = (randrange(1, w_tiles-1), randrange((h_tiles / 2) + 2, h_tiles - 1))
+        a_spawn = (randrange(T_P, WORLD_WIDTH-3*T_P), 
+                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 3*T_P))
+        b_spawn = (randrange(T_P, WORLD_WIDTH-3*T_P), 
+                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 3*T_P))
         self.player_a = Player(BLACK, a_spawn)
         self.player_b = Player(BLACK, b_spawn)
         self.world = World(w_tiles, h_tiles)
@@ -36,6 +38,7 @@ class ServerGame(object):
     def run(self):
         self.connect_players()
         self.start_game()
+        self.update_clients()
         i = 0
         while True:
             CLOCK.tick(FPS)

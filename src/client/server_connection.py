@@ -18,6 +18,8 @@ class ServerConnection(Connection):
             for m in begin_message:
                 if m['type'] == START_GAME:
                     return m['role']
+                else:
+                    raise Exception()
 
     def move(self, pressed, direction):
         self.send_data({'type': MOVE, 'direction': direction,
