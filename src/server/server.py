@@ -24,11 +24,14 @@ pg.init()
 
 class ServerGame(object):
     def __init__(self):
-        self.player_a = Player(BLACK)
-        self.player_b = Player(BLACK)
-        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
+        w_tiles, h_tiles = WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P
+        a_spawn = (randrange(1, w_tiles-1), randrange((h_tiles / 2) + 2, h_tiles - 1))
+        b_spawn = (randrange(1, w_tiles-1), randrange((h_tiles / 2) + 2, h_tiles - 1))
+        self.player_a = Player(BLACK, a_spawn)
+        self.player_b = Player(BLACK, b_spawn)
+        self.world = World(w_tiles, h_tiles)
+        self.updates = self.world.randomize_start()
         self.clients = []
-        self.updates = []
 
     def run(self):
         self.connect_players()
@@ -36,8 +39,14 @@ class ServerGame(object):
         while True:
             CLOCK.tick(FPS)
             self.get_actions()
-            self.player_a.update(self.world)
-            self.player_b.update(self.world)
+            a_ret = self.player_a.update(self.world)
+            if a_ret == WIN:
+                pass
+                #TODO
+            b_ret = self.player_b.update(self.world)
+            if b_ret == WIN:
+                pass
+                #TODO
             self.update_clients()
 
     def start_game(self):

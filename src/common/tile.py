@@ -11,6 +11,7 @@ class TileMeta(type):
             if not hasattr(new_tile_type, attr):
                 setattr(new_tile_type, attr, False)
         new_tile_type._tile_types.append(new_tile_type)
+        new_tile_type._ind = len(new_tile_type._tile_types) - 1
         return new_tile_type
 
 class Tile(Sprite):
@@ -25,7 +26,6 @@ class Tile(Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.move_ip(x*T_P, y*T_P)
-        self.tile = False
 
 class Ground(Tile):
     w = 1
@@ -40,3 +40,10 @@ class Bomb(Tile):
     deadly = True
     def __init__(self, x, y):
         Tile.__init__(self, x, y, RED)
+
+class Gold(Tile):
+    w = 2
+    h = 2
+    win = True
+    def __init__(self, x, y):
+        Tile.__init__(self, x, y, YELLOW)

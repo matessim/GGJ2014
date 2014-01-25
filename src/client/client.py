@@ -47,8 +47,8 @@ class Camera(object):
 
 class ClientGame(object):
     def __init__(self, ip):
-        self.player_a = Player(RED)
-        self.player_b = Player(BLUE)
+        self.player_a = Player(RED, (1, 1))
+        self.player_b = Player(BLUE, (1, 1))
         self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
         self.camera = Camera(0, 0)
         self.screen = pg.display.set_mode(SIZE)

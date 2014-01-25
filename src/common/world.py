@@ -4,14 +4,36 @@ from pygame.locals import *
 from pygame.sprite import Sprite
 from consts import *
 from tile import *
+from random import random, randrange
 
 class World(object):
     def __init__(self, w, h):
         self.w = w
         self.h = h
         self.tiles = {}
-        for x in xrange(w):
-            self.tiles[(x, h-1)] = Ground(x, h-1)
+
+    def randomize_start(self):
+        updates = []
+        for x in xrange(self.w):
+            if random() < 0.3:
+                self.tiles[(x, self.h-1)] = Ground(x, self.h-1)
+                updates.append((x, self.h-1, Ground._ind))
+
+        for x in xrange(self.w):
+            self.tiles[(x, 0)] = Ground(x, 0)
+            updates.append((x, 0, Ground._ind))
+
+        for y in xrange(self.h):
+            self.tiles[(0, y)] = Ground(0, y)
+            self.tiles[(self.w-1, y)] = Ground(self.w-1, y)
+            updates.append((0, y, Ground._ind))
+            updates.append((self.w-1, y, Ground._ind))
+
+        x_win = randrange(1, self.w-1)
+        y_win = randrange(1, self.h / 2)
+        self.tiles[(x_win, y_win)] = Ground(x_win, y_win)
+        updates.append((x_win, y_win, Ground._ind))
+        return updates
 
     def draw(self, surface, camera):
         for tile in self.iter_visible(camera):
