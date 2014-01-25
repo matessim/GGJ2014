@@ -161,3 +161,4 @@ if __name__ == "__main__":
         print "Usage: %s <server_ip>" % sys.argv[0]
         sys.exit(1)
     ClientGame(sys.argv[1]).run()
+    

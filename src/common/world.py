@@ -36,7 +36,7 @@ class World(object):
         return updates
 
     def draw(self, surface, camera):
-        for tile in self.iter_visible(camera):
+        for tile in self:
             surface.blit(tile.image, camera.to_local(tile.rect))
 
     def add_tile(self, t_x, t_y, t):
