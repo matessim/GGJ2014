@@ -24,16 +24,17 @@ pg.init()
 
 class ServerGame(object):
     def __init__(self):
-        w_tiles, h_tiles = WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P
         a_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
                     randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
         b_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
                     randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
         self.player_a = Player(BLACK, a_spawn)
         self.player_b = Player(BLACK, b_spawn)
-        self.world = World(w_tiles, h_tiles)
+        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
         self.updates = self.world.randomize_start()
         self.clients = []
+        self.wins_a = 0
+        self.wins_b = 0
 
     def run(self):
         self.connect_players()
@@ -45,18 +46,32 @@ class ServerGame(object):
             self.get_actions()
             a_ret = self.player_a.update(self.world)
             if a_ret == WIN:
-                pass
-                #TODO
+                self.wins_a += 1
+                for client in self.clients:
+                    client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b})
+                self.restart()
             b_ret = self.player_b.update(self.world)
             if b_ret == WIN:
-                pass
-                #TODO
+                self.wins_b += 1
+                for client in self.clients:
+                    client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b})
+                self.restart()
             self.update_clients()
             i += 1
             if i % FRAMES_PER_CREDIT == 0:
                 i = 0
                 self.player_a.credits += 1
                 self.player_b.credits += 1
+
+    def restart(self):
+        a_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
+                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
+        b_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
+                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
+        self.player_a = Player(BLACK, a_spawn)
+        self.player_b = Player(BLACK, b_spawn)
+        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
+        self.updates = self.world.randomize_start()
 
     def start_game(self):
         for client in self.clients:
