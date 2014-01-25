@@ -52,8 +52,6 @@ class Camera(object):
 class ClientGame(object):
     def __init__(self, ip):
         self.screen_log = ScreenLog(8)
-        self.screen_log.log("hello World!")
-        self.screen_log.log("hello Sample for Joseph!")
         self.player_a = Player(RED)
         self.player_b = Player(BLUE)
         self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
