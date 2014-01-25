@@ -17,6 +17,7 @@ import select
 import socket
 import threading
 import time
+import json
 
 from client_connection import *
 
@@ -35,47 +36,79 @@ class ServerGame(object):
         self.clients = []
         self.wins_a = 0
         self.wins_b = 0
+        self.run_lock = threading.Lock()
+        self.repl = threading.Thread(target=self.repl_thread)
+
+    def repl_thread(self):
+        while True:
+            result = raw_input(">>>")
+            letter = result.split(' ')[0].lower()
+            if letter == 'h':
+                print "h - help, l - load (map), r - restart"
+            if letter == 'l':
+                with self.run_lock:
+                    self.load_level(result.split(' ')[1])    
+            if letter == 'r':
+                with self.run_lock:
+                    self.restart()
+
+    def load_level(self, level_location):
+        data = json.loads(open(level_location, 'rb').read().decode('zlib'))
+        spawn_a = data[0]
+        spawn_b = data[1]
+        tiles = data[2:] 
+        for client in self.clients:
+            client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b})
+        # clean world
+        self.player_a = Player(RED, spawn_a)
+        self.player_b = Player(BLUE, spawn_b)
+        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
+        self.updates = []
+        for tile in tiles:
+            x, y, t = tile
+            self.world.add_tile(x, y, t)
+            self.updates.append((x, y, t))    
+
 
     def run(self):
         self.connect_players()
         self.start_game()
         self.update_clients()
+        self.repl.start()
         i = 0
         while True:
-            CLOCK.tick(FPS)
-            self.get_actions()
-            a_ret = self.player_a.update(self.world)
-            if a_ret == WIN:
-                self.wins_a += 1
-                for client in self.clients:
-                    client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b})
-                self.restart()
-            b_ret = self.player_b.update(self.world)
-            if b_ret == WIN:
-                self.wins_b += 1
-                for client in self.clients:
-                    client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b})
-                self.restart()
-            self.update_clients()
-            i += 1
-            if i % FRAMES_PER_CREDIT == 0:
-                i = 0
-                self.player_a.credits += 1
-                self.player_b.credits += 1
+            with self.run_lock:
+                CLOCK.tick(FPS)
+                self.get_actions()
+                a_ret = self.player_a.update(self.world)
+                if a_ret == WIN:
+                    self.wins_a += 1
+                    self.restart()
+                b_ret = self.player_b.update(self.world)
+                if b_ret == WIN:
+                    self.wins_b += 1
+                    self.restart()
+                self.update_clients()
+                i += 1
+                if i % FRAMES_PER_CREDIT == 0:
+                    i = 0
+                    self.player_a.credits += 1
+                    self.player_b.credits += 1
 
     def restart(self):
+        for client in self.clients:
+            client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b})
         a_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
                     randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
         b_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
                     randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
-        self.player_a = Player(BLACK, a_spawn)
-        self.player_b = Player(BLACK, b_spawn)
+        self.player_a = Player(RED, a_spawn)
+        self.player_b = Player(BLUE, b_spawn)
         self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
         self.updates = self.world.randomize_start()
 
     def start_game(self):
         for client in self.clients:
-            print "Sent start game to client!"
             client.send_data({'type' : START_GAME, 'role' : client.role})
 
     def connect_players(self):
