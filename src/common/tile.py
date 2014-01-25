@@ -15,8 +15,10 @@ class TileMeta(type):
         return new_tile_type
 
 class Tile(Sprite):
+    "Basic Tile"
 
     __metaclass__ = TileMeta
+
 
     def __init__(self, x, y, color):
         Sprite.__init__(self)
@@ -28,6 +30,7 @@ class Tile(Sprite):
         self.rect.move_ip(x*T_P, y*T_P)
 
 class Ground(Tile):
+    "Ground Tile"
     w = 1
     h = 1
     solid = True
@@ -36,6 +39,7 @@ class Ground(Tile):
         Tile.__init__(self, x, y, _rand_nearby_color(GREEN))
 
 class Spike(Tile):
+    "Spike Tile"
     w = 2
     h = 2
     deadly = True
@@ -44,6 +48,7 @@ class Spike(Tile):
         Tile.__init__(self, x, y, _rand_nearby_color(RED))
 
 class Gold(Tile):
+    "Gold Tile"
     w = 2
     h = 2
     win = True
