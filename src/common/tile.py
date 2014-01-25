@@ -1,6 +1,7 @@
 import pygame as pg
 from pygame.sprite import Sprite
 from consts import *
+from random import randrange
 
 class TileMeta(type):
     def __new__(mcs, name, bases, d):
@@ -55,7 +56,13 @@ class Gold(Tile):
     def __init__(self, x, y):
         Tile.__init__(self, x, y, YELLOW)
 
-from random import randrange
+class Clear(Tile):
+    "This is a pseudo tile used for removing other tiles"
+    w = 1
+    h = 1
+    cost = 4
+    def __init__(self, x, y):
+        Tile.__init__(self, x, y, WHITE)
 
 def _rand_nearby_color(color):
     c = color.r, color.g, color.b

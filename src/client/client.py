@@ -105,7 +105,7 @@ class ClientGame(object):
                 self.screen.blit(FONT.render("%d credits" % self.player_b.credits,
                     1, (255, 255, 255)), (WIDTH - 250, 30))
             if self.role == DISRUPTOR_TEAM_B or self.role == DISRUPTOR_TEAM_A:
-                self.screen.blit(FONT.render("Current Tile: %s" % Tile.tile_types[self.cur_tile].__doc__,
+                self.screen.blit(FONT.render("Current Tile: %s" % Tile.tile_types[self.cur_tile].__name__,
                     1, (255, 255, 255)), (WIDTH - 250, 50))
                 self.screen.blit(FONT.render("Tile Cost: %d" % Tile.tile_types[self.cur_tile].cost,
                     1, (255, 255, 255)), (WIDTH - 250, 70))
@@ -161,6 +161,8 @@ class ClientGame(object):
                     self.cur_tile = Ground.index
                 elif event.key == K_2:
                     self.cur_tile = Spike.index
+                elif event.key == K_3:
+                    self.cur_tile = Clear.index
 
     def handle_mouse_press(self):
         x, y = self.camera.to_global(self.mouse_pos)
@@ -171,4 +173,4 @@ if __name__ == "__main__":
         print "Usage: %s <server_ip>" % sys.argv[0]
         sys.exit(1)
     ClientGame(sys.argv[1]).run()
-    
+
