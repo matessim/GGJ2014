@@ -60,7 +60,7 @@ class ClientGame(object):
         self.mouse_button_pressed = False
         self.mouse_pos = (0, 0)
         self.connect_to_server(ip)
-        self.cur_tile = 1
+        self.cur_tile = Ground.index
         self.last_keys = { key: False for key in keyboard_actions}
 
     def connect_to_server(self, ip):
@@ -152,9 +152,9 @@ class ClientGame(object):
                 self.mouse_button_pressed = False
             elif event.type == KEYDOWN:
                 if event.key == K_1:
-                    self.cur_tile = 1
+                    self.cur_tile = Ground.index
                 elif event.key == K_2:
-                    self.cur_tile = 2
+                    self.cur_tile = Spike.index
 
     def handle_mouse_press(self):
         x, y = self.camera.to_global(self.mouse_pos)

@@ -25,9 +25,9 @@ pg.init()
 class ServerGame(object):
     def __init__(self):
         w_tiles, h_tiles = WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P
-        a_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P), 
+        a_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
                     randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
-        b_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P), 
+        b_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
                     randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
         self.player_a = Player(BLACK, a_spawn)
         self.player_b = Player(BLACK, b_spawn)
@@ -116,7 +116,7 @@ class ServerGame(object):
         y = event['y']
         t = event['t']
 
-        tile_type = Tile._tile_types[t]
+        tile_type = Tile.tile_types[t]
         if tile_type.cost > player.credits:
             return
 

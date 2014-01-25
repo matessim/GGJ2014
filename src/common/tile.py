@@ -5,13 +5,13 @@ from consts import *
 class TileMeta(type):
     def __new__(mcs, name, bases, d):
         new_tile_type = type.__new__(mcs, name, bases, d)
-        if not hasattr(new_tile_type, '_tile_types'):
-            new_tile_type._tile_types = []
+        if not hasattr(new_tile_type, 'tile_types'):
+            new_tile_type.tile_types = []
         for attr in ['solid', 'deadly', 'win']:
             if not hasattr(new_tile_type, attr):
                 setattr(new_tile_type, attr, False)
-        new_tile_type._tile_types.append(new_tile_type)
-        new_tile_type._ind = len(new_tile_type._tile_types) - 1
+        new_tile_type.tile_types.append(new_tile_type)
+        new_tile_type.index = len(new_tile_type.tile_types) - 1
         return new_tile_type
 
 class Tile(Sprite):
@@ -35,7 +35,7 @@ class Ground(Tile):
     def __init__(self, x, y):
         Tile.__init__(self, x, y, _rand_nearby_color(GREEN))
 
-class Bomb(Tile):
+class Spike(Tile):
     w = 2
     h = 2
     deadly = True

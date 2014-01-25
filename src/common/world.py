@@ -17,22 +17,22 @@ class World(object):
         for x in xrange(self.w):
             if random() < 0.3:
                 self.tiles[(x, self.h-1)] = Ground(x, self.h-1)
-                updates.append((x, self.h-1, Ground._ind))
+                updates.append((x, self.h-1, Ground.index))
 
         for x in xrange(self.w):
             self.tiles[(x, 0)] = Ground(x, 0)
-            updates.append((x, 0, Ground._ind))
+            updates.append((x, 0, Ground.index))
 
         for y in xrange(self.h):
             self.tiles[(0, y)] = Ground(0, y)
             self.tiles[(self.w-1, y)] = Ground(self.w-1, y)
-            updates.append((0, y, Ground._ind))
-            updates.append((self.w-1, y, Ground._ind))
+            updates.append((0, y, Ground.index))
+            updates.append((self.w-1, y, Ground.index))
 
         x_win = randrange(1, self.w-1)
         y_win = randrange(1, self.h / 2)
         self.tiles[(x_win, y_win)] = Gold(x_win, y_win)
-        updates.append((x_win, y_win, Gold._ind))
+        updates.append((x_win, y_win, Gold.index))
         return updates
 
     def draw(self, surface, camera):
@@ -40,7 +40,7 @@ class World(object):
             surface.blit(tile.image, camera.to_local(tile.rect))
 
     def add_tile(self, t_x, t_y, t):
-        tile_type = Tile._tile_types[t]
+        tile_type = Tile.tile_types[t]
         tile = tile_type(t_x, t_y)
         if pg.sprite.spritecollide(tile, self, False):
             return False
