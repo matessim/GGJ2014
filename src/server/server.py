@@ -1,4 +1,5 @@
-# Author : MM
+#!/usr/bin/python
+
 # Purpose: Run the game server
 
 import sys, os
@@ -38,6 +39,7 @@ class ServerGame(object):
         self.wins_b = 0
         self.run_lock = threading.Lock()
         self.repl = threading.Thread(target=self.repl_thread)
+        self.repl.daemon = True
 
     def repl_thread(self):
         while True:
@@ -47,7 +49,7 @@ class ServerGame(object):
                 print "h - help, l - load (map), r - restart, g - available savegames"
             if letter == 'l':
                 with self.run_lock:
-                    self.load_level(result.split(' ')[1])    
+                    self.load_level(result.split(' ')[1])
             if letter == 'r':
                 with self.run_lock:
                     self.restart()
@@ -55,21 +57,21 @@ class ServerGame(object):
                 print ' '.join([x for x in os.listdir('..' + os.sep + 'good-levels') if 'savegame' in x])
 
     def load_level(self, level_location):
-        data = json.loads(open(level_location, 'rb').read().decode('zlib'))
+        data = json.loads(open('..' + os.sep + 'good-levels' + os.sep + level_location, 'rb').read().decode('zlib'))
         spawn_a = data[0]
         spawn_b = data[1]
-        tiles = data[2:] 
+        tiles = data[2:]
         for client in self.clients:
             client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b, 'spawn_a': spawn_a, 'spawn_b': spawn_b})
         # clean world
         self.player_a = Player(RED, spawn_a)
         self.player_b = Player(BLUE, spawn_b)
-        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
+        self.world.empty()
         self.updates = []
         for tile in tiles:
             x, y, t = tile
             self.world.add_tile(x, y, t)
-            self.updates.append((x, y, t))    
+            self.updates.append((x, y, t))
 
 
     def run(self):
@@ -106,7 +108,7 @@ class ServerGame(object):
             client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b, 'spawn_a': spawn_a, 'spawn_b': spawn_b})
         self.player_a = Player(RED, spawn_a)
         self.player_b = Player(BLUE, spawn_b)
-        self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
+        self.world.empty()
         self.updates = self.world.randomize_start()
 
     def start_game(self):

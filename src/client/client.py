@@ -97,7 +97,7 @@ class ClientGame(object):
             if update and update[0] == END_GAME:
                 self.wins_a = update[1]
                 self.wins_b = update[2]
-                self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
+                self.world.empty()
                 self.camera = Camera(0, 0)
                 self.player_a = Player(RED, update[3])
                 self.player_b = Player(BLUE, update[4])
@@ -209,7 +209,7 @@ class ClientGame(object):
         print "Saving world..."
         fname = SAVE_FILE_FORMAT + str(int(time.time())) + '.bin'
         f = open(fname, 'wb')
-        f.write(json.dumps([self.player_a.spawn_point, self.player_b.spawn_point] + 
+        f.write(json.dumps([self.player_a.spawn_point, self.player_b.spawn_point] +
             [(t.rect.x / T_P, t.rect.y / T_P, t.index) for t in self.world]).encode('zlib'))
         f.close()
         print "World saved to ", fname
