@@ -176,16 +176,28 @@ class ClientGame(object):
             elif event.type == KEYDOWN:
                 if event.key == K_1:
                     self.cur_tile = Ground.index
+                
                 elif event.key == K_2:
                     self.cur_tile = Spike.index
+                
                 elif event.key == K_3:
                     self.cur_tile = Clear.index
+                
                 # Restart game
                 elif event.key == KMOD_LCTRL | K_r:
                     self.suicide()
+                
                 # Save game
                 elif event.key == KMOD_LCTRL | K_p:
                     self.save_now()
+
+                # Toggle Debug/Developer
+                elif event.key == KMOD_LCTRL | K_i:
+                    print "Toggle devmode"
+                    self.toggle_devmode()
+
+    def toggle_devmode(self):
+        self.server.send_data({'type' : DEVMODE})
 
     def suicide(self):
         self.server.send_data({'type' : SUICIDE})

@@ -6,7 +6,7 @@ from consts import *
 
 
 class Player(Sprite):
-    def __init__(self, color, spawn_point):
+    def __init__(self, color, spawn_point, developer=False):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((40, 40), pg.SRCALPHA)
         pg.draw.circle(self.image, BLACK, (20, 20), 20)
@@ -15,7 +15,14 @@ class Player(Sprite):
         self.speed = T_P / 2
         self.spawn_point = spawn_point
         self.credits = 0
+        self.developer = developer
         self.respawn()
+
+    def toggle_developer(self):
+        self.developer = not self.developer
+
+    def is_developer(self):
+        return self.developer
 
     def respawn(self):
         self.dx = 0
