@@ -33,7 +33,7 @@ class Ground(Tile):
     solid = True
     cost = 1
     def __init__(self, x, y):
-        Tile.__init__(self, x, y, GREEN)
+        Tile.__init__(self, x, y, _rand_nearby_color(GREEN))
 
 class Bomb(Tile):
     w = 2
@@ -41,7 +41,7 @@ class Bomb(Tile):
     deadly = True
     cost = 3
     def __init__(self, x, y):
-        Tile.__init__(self, x, y, RED)
+        Tile.__init__(self, x, y, _rand_nearby_color(RED))
 
 class Gold(Tile):
     w = 2
@@ -49,3 +49,10 @@ class Gold(Tile):
     win = True
     def __init__(self, x, y):
         Tile.__init__(self, x, y, YELLOW)
+
+from random import randrange
+
+def _rand_nearby_color(color):
+    c = color.r, color.g, color.b
+    c = [min(max(i + randrange(-40, 41), 0), 255) for i in c]
+    return pg.Color(*c)

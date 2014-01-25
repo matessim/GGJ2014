@@ -75,6 +75,7 @@ class ClientGame(object):
     def run(self):
         while True:
             CLOCK.tick(FPS)
+            self.screen_log.log(repr(CLOCK.get_fps()))
             self.handle_events()
 
             if self.mouse_button_pressed:

@@ -24,7 +24,7 @@ T_P = 10
 
 CLOCK = pg.time.Clock()
 
-FPS               = 60
+FPS               = 30
 FRAMES_PER_CREDIT = 2 * FPS
 GRAVITY           = 1
 

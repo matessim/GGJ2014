@@ -148,6 +148,5 @@ class ServerGame(object):
         yield DISRUPTOR_TEAM_B
         yield RUNNER_TEAM_B
 
-
 if __name__ == '__main__':
     ServerGame().run()
