@@ -100,10 +100,16 @@ class ClientGame(object):
             self.draw_fps()
             if self.role == DISRUPTOR_TEAM_A:
                 self.screen.blit(FONT.render("%d credits" % self.player_a.credits,
-                    1, (255, 255, 255)), (WIDTH - 100, 30))
+                    1, (255, 255, 255)), (WIDTH - 250, 30))
             if self.role == DISRUPTOR_TEAM_B:
                 self.screen.blit(FONT.render("%d credits" % self.player_b.credits,
-                    1, (255, 255, 255)), (WIDTH - 100, 30))
+                    1, (255, 255, 255)), (WIDTH - 250, 30))
+            if self.role == DISRUPTOR_TEAM_B or self.role == DISRUPTOR_TEAM_A:
+                self.screen.blit(FONT.render("Current Tile: %s" % Tile.tile_types[self.cur_tile].__doc__,
+                    1, (255, 255, 255)), (WIDTH - 250, 50))
+                self.screen.blit(FONT.render("Tile Cost: %d" % Tile.tile_types[self.cur_tile].cost,
+                    1, (255, 255, 255)), (WIDTH - 250, 70))
+
 
             self.refresh_log()
             pg.display.flip()
