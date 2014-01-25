@@ -7,10 +7,11 @@ from tile import *
 from random import random, randrange
 
 class World(Group):
-    def __init__(self, w, h):
+    def __init__(self, w, h, is_server):
         Group.__init__(self)
         self.w = w
         self.h = h
+        self.is_server = is_server
 
     def randomize_start(self):
         updates = []
@@ -41,7 +42,7 @@ class World(Group):
 
     def add_tile(self, t_x, t_y, t):
         tile_type = Tile.tile_types[t]
-        tile = tile_type(t_x, t_y)
+        tile = tile_type(t_x, t_y, load_image=not self.is_server)
         collisions = pg.sprite.spritecollide(tile, self, False)
         if tile_type == Clear:
             if len(collisions) != 1:
