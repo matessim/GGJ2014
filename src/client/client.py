@@ -91,7 +91,7 @@ class ClientGame(object):
 
             self.server.get_update([self.player_a, self.player_b], self.world)
             self.update_camera()
-            self.screen.fill(BLACK)
+            self.screen.fill(WHITE)
             self.screen.blit(self.player_a.image,
                     self.camera.to_local(self.player_a.rect))
             self.screen.blit(self.player_b.image,
@@ -163,6 +163,12 @@ class ClientGame(object):
                     self.cur_tile = Spike.index
                 elif event.key == K_3:
                     self.cur_tile = Clear.index
+                # Restart game
+                elif event.key == KMOD_LCTRL | K_r:
+                    self.suicide()
+
+    def suicide(self):
+        self.server.send_data({'type' : SUICIDE})
 
     def handle_mouse_press(self):
         x, y = self.camera.to_global(self.mouse_pos)

@@ -83,6 +83,11 @@ class ServerGame(object):
                     self.handle_move(client, event)
                 elif event['type'] == ADD_ITEM:
                     self.handle_add_item(client, event)
+                elif event['type'] == SUICIDE:
+                    if client.role == RUNNER_TEAM_A:
+                        self.player_a.die()
+                    elif client.role == RUNNER_TEAM_B:
+                        self.player_b.die()
 
     def handle_move(self, client, event):
         if client.role == RUNNER_TEAM_A:
@@ -144,7 +149,5 @@ class ServerGame(object):
         yield DISRUPTOR_TEAM_B
         yield RUNNER_TEAM_B
 
-import cProfile
-
 if __name__ == '__main__':
-    cProfile.run('ServerGame().run()', 'C:\Temp\log123.log')
+    ServerGame().run()
