@@ -41,6 +41,7 @@ RESTART_GAME = 3
 MOVE     = 1001
 ADD_ITEM = 1002
 SUICIDE  = 1003
+DEVMODE  = 1004
 
 # Player update return values
 

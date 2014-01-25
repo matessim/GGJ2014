@@ -88,6 +88,12 @@ class ServerGame(object):
                         self.player_a.die()
                     elif client.role == RUNNER_TEAM_B:
                         self.player_b.die()
+                elif event['type'] == DEVMODE:
+                    if client.role == DISRUPTOR_TEAM_A:
+                        self.player_a.toggle_developer()
+                    elif client.role == DISRUPTOR_TEAM_B:
+                        self.player_b.toggle_developer()
+                
 
     def handle_move(self, client, event):
         if client.role == RUNNER_TEAM_A:
@@ -118,7 +124,7 @@ class ServerGame(object):
         t = event['t']
 
         tile_type = Tile.tile_types[t]
-        if tile_type.cost > player.credits:
+        if tile_type.cost > player.credits and not(player.is_developer()):
             return
 
         min_dist = tile_type.w * tile_type.h
@@ -130,7 +136,8 @@ class ServerGame(object):
         added = self.world.add_tile(x, y, t)
         if added:
             self.updates.append((x, y, t))
-            player.credits -= tile_type.cost
+            if not(player.is_developer()):
+                player.credits -= tile_type.cost
 
     def update_clients(self):
         p1 = self.player_a.rect
