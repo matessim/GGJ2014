@@ -31,8 +31,8 @@ class World(object):
 
         x_win = randrange(1, self.w-1)
         y_win = randrange(1, self.h / 2)
-        self.tiles[(x_win, y_win)] = Ground(x_win, y_win)
-        updates.append((x_win, y_win, Ground._ind))
+        self.tiles[(x_win, y_win)] = Gold(x_win, y_win)
+        updates.append((x_win, y_win, Gold._ind))
         return updates
 
     def draw(self, surface, camera):
