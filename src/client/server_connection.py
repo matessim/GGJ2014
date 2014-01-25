@@ -19,7 +19,7 @@ class ServerConnection(Connection):
             begin_message = self.get_data()
             for m in begin_message:
                 if m['type'] == START_GAME:
-                    return m['role']
+                    return (m['role'], m['spawn_a'], m['spawn_b'])
                 else:
                     raise Exception()
             time.sleep(0.25)
@@ -35,7 +35,7 @@ class ServerConnection(Connection):
         player_a, player_b = players
         for state in self.get_data():
             if state.get('type', None) == END_GAME:
-                return (END_GAME, state['wins_a'], state['wins_b'])
+                return (END_GAME, state['wins_a'], state['wins_b'], state['spawn_a'], state['spawn_b'])
             else:
                 player_a.rect.x  = state['player_one']['x']
                 player_a.rect.y  = state['player_one']['y']

@@ -71,7 +71,7 @@ class ClientGame(object):
         s = socket.socket()
         s.connect((ip, SERVER_PORT))
         self.server = ServerConnection(s)
-        self.role = self.server.wait_for_role()
+        self.role, self.player_a.spawn_point, self.player_b.spawn_point = self.server.wait_for_role()
         pg.display.set_caption(PLAYER_DESC[self.role])
         self.screen_log.log(PLAYER_DESC[self.role])
         print "Connected!"
@@ -99,6 +99,8 @@ class ClientGame(object):
                 self.wins_b = update[2]
                 self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
                 self.camera = Camera(0, 0)
+                self.player_a = Player(RED, update[3])
+                self.player_a = Player(BLUE, update[4])
 
             self.update_camera()
             self.screen.fill(WHITE)

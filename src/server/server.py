@@ -58,7 +58,7 @@ class ServerGame(object):
         spawn_b = data[1]
         tiles = data[2:] 
         for client in self.clients:
-            client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b})
+            client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b, 'spawn_a': spawn_a, 'spawn_b': spawn_b})
         # clean world
         self.player_a = Player(RED, spawn_a)
         self.player_b = Player(BLUE, spawn_b)
@@ -96,20 +96,20 @@ class ServerGame(object):
                     self.player_b.credits += 1
 
     def restart(self):
+        spawn_a = (randrange(T_P, WORLD_WIDTH-4*T_P),
+                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
+        spawn_b = (randrange(T_P, WORLD_WIDTH-4*T_P),
+                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
         for client in self.clients:
-            client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b})
-        a_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
-                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
-        b_spawn = (randrange(T_P, WORLD_WIDTH-4*T_P),
-                    randrange((WORLD_HEIGHT / 2) + 2*T_P, WORLD_HEIGHT - 4*T_P))
-        self.player_a = Player(RED, a_spawn)
-        self.player_b = Player(BLUE, b_spawn)
+            client.send_data({'type': END_GAME, 'wins_a': self.wins_a, 'wins_b': self.wins_b, 'spawn_a': spawn_a, 'spawn_b': spawn_b})
+        self.player_a = Player(RED, spawn_a)
+        self.player_b = Player(BLUE, spawn_b)
         self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
         self.updates = self.world.randomize_start()
 
     def start_game(self):
         for client in self.clients:
-            client.send_data({'type' : START_GAME, 'role' : client.role})
+            client.send_data({'type' : START_GAME, 'role' : client.role, 'spawn_a': self.player_a.spawn_point, 'spawn_b': self.player_b.spawn_point})
 
     def connect_players(self):
         role_giver = self.role_distributor()
