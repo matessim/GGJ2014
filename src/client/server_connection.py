@@ -5,6 +5,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(__file_dir__, '..')))
 from common.connection import Connection
 from common.consts import *
 
+import time
+
 class ServerConnection(Connection):
     def __init__(self, server_socket):
         self._socket = server_socket
@@ -20,6 +22,7 @@ class ServerConnection(Connection):
                     return m['role']
                 else:
                     raise Exception()
+            time.sleep(1)
 
     def move(self, pressed, direction):
         self.send_data({'type': MOVE, 'direction': direction,
