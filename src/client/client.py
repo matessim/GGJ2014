@@ -100,15 +100,15 @@ class ClientGame(object):
             self.draw_fps()
             if self.role == DISRUPTOR_TEAM_A:
                 self.screen.blit(FONT.render("%d credits" % self.player_a.credits,
-                    1, (255, 255, 255)), (WIDTH - 250, 30))
+                    1, BLACK), (WIDTH - 250, 30))
             if self.role == DISRUPTOR_TEAM_B:
                 self.screen.blit(FONT.render("%d credits" % self.player_b.credits,
-                    1, (255, 255, 255)), (WIDTH - 250, 30))
-            if self.role == DISRUPTOR_TEAM_B or self.role == DISRUPTOR_TEAM_A:
+                    1, BLACK), (WIDTH - 250, 30))
+            if self.role == DISRUPTOR_TEAM_A or self.role == DISRUPTOR_TEAM_B:
                 self.screen.blit(FONT.render("Current Tile: %s" % Tile.tile_types[self.cur_tile].__name__,
-                    1, (255, 255, 255)), (WIDTH - 250, 50))
+                    1, BLACK), (WIDTH - 250, 50))
                 self.screen.blit(FONT.render("Tile Cost: %d" % Tile.tile_types[self.cur_tile].cost,
-                    1, (255, 255, 255)), (WIDTH - 250, 70))
+                    1, BLACK), (WIDTH - 250, 70))
 
 
             self.refresh_log()
@@ -117,12 +117,12 @@ class ClientGame(object):
     def refresh_log(self):
         init_y = 30
         for line in self.screen_log.get_logs():
-            self.screen.blit(FONT.render(line, 1,  (255,255, 255)), (15, 20 + init_y))
+            self.screen.blit(FONT.render(line, 1,  BLACK), (15, 20 + init_y))
             init_y += 15
 
     def draw_fps(self):
         self.screen.blit(FONT.render("FPS: %f" % CLOCK.get_fps(), 1,
-            (255, 255, 255)), (WIDTH - 100, HEIGHT - 30))
+            BLACK), (WIDTH - 100, HEIGHT - 30))
 
     def update_camera(self):
         if self.role in [DISRUPTOR_TEAM_A, DISRUPTOR_TEAM_B]:
