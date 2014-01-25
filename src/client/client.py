@@ -161,6 +161,12 @@ class ClientGame(object):
                     self.cur_tile = Ground.index
                 elif event.key == K_2:
                     self.cur_tile = Spike.index
+                # Restart game
+                elif event.key == KMOD_LCTRL | K_r:
+                    self.suicide_now()
+
+    def suicide_now(self):
+        self.server.send_data({'type' : SUICIDE})
 
     def handle_mouse_press(self):
         x, y = self.camera.to_global(self.mouse_pos)
