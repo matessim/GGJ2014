@@ -14,6 +14,7 @@ class Player(Sprite):
         self.rect = self.image.get_rect()
         self.speed = T_P / 2
         self.spawn_point = spawn_point
+        self.credits = 0
         self.respawn()
 
     def respawn(self):

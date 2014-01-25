@@ -36,6 +36,7 @@ class ServerGame(object):
     def run(self):
         self.connect_players()
         self.start_game()
+        i = 0
         while True:
             CLOCK.tick(FPS)
             self.get_actions()
@@ -48,6 +49,11 @@ class ServerGame(object):
                 pass
                 #TODO
             self.update_clients()
+            i += 1
+            if i % FRAMES_PER_CREDIT == 0:
+                i = 0
+                self.player_a.credits += 1
+                self.player_b.credits += 1
 
     def start_game(self):
         for client in self.clients:
@@ -96,11 +102,22 @@ class ServerGame(object):
                 player.jump()
 
     def handle_add_item(self, client, event):
-        if client.role != DISRUPTOR_TEAM_A and client.role != DISRUPTOR_TEAM_B:
+        if client.role == DISRUPTOR_TEAM_A:
+            player = self.player_a
+        elif client.role == DISRUPTOR_TEAM_B:
+            player = self.player_b
+        else:
             return
+
         x = event['x']
         y = event['y']
         t = event['t']
+
+        tile_type = Tile._tile_types[t]
+        if tile_type.cost > player.credits:
+            return
+        player.credits -= tile_type.cost
+
         added = self.world.add_tile(x, y, t)
         if added:
             self.updates.append((x, y, t))
@@ -109,8 +126,10 @@ class ServerGame(object):
         p1 = self.player_a.rect
         p2 = self.player_b.rect
         for client in self.clients:
-            client.send_data({'player_one': {'x': p1.x, 'y': p1.y},
-                'player_two' : {'x': p2.x, 'y': p2.y},
+            client.send_data({'player_one': {'x': p1.x, 'y': p1.y,
+                'credits': self.player_a.credits},
+                'player_two' : {'x': p2.x, 'y': p2.y,
+                    'credits': self.player_b.credits},
                 'updates': self.updates})
         self.updates = []
 

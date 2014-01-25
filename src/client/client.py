@@ -7,12 +7,16 @@ import pygame as pg
 from pygame.locals import *
 from pygame.sprite import Sprite, Group, spritecollide
 
+from screen_log import *
 from common.player import Player
 from common.consts import *
 from common.world import *
 from server_connection import *
 
 pg.init()
+# Needs pg to be initialized before declaring
+FONT = pg.font.SysFont('monospace', 15)
+
 
 keyboard_actions = {K_LEFT: LEFT, K_RIGHT: RIGHT, K_UP: JUMP}
 
@@ -49,6 +53,7 @@ class ClientGame(object):
     def __init__(self, ip):
         self.player_a = Player(RED, (1, 1))
         self.player_b = Player(BLUE, (1, 1))
+        self.screen_log = ScreenLog(8)
         self.world = World(WORLD_WIDTH/T_P, WORLD_HEIGHT/T_P)
         self.camera = Camera(0, 0)
         self.screen = pg.display.set_mode(SIZE)
@@ -63,6 +68,8 @@ class ClientGame(object):
         s.connect((ip, SERVER_PORT))
         self.server = ServerConnection(s)
         self.role = self.server.wait_for_role()
+        pg.display.set_caption(PLAYER_DESC[self.role])
+        self.screen_log.log(PLAYER_DESC[self.role])
         print "Connected!"
 
     def run(self):
@@ -90,7 +97,21 @@ class ClientGame(object):
             self.screen.blit(self.player_b.image,
                     self.camera.to_local(self.player_b.rect))
             self.world.draw(self.screen, self.camera)
+            if self.role == DISRUPTOR_TEAM_A:
+                self.screen.blit(FONT.render("%d credits" % self.player_a.credits,
+                    1, (255, 255, 255)), (WIDTH - 100, 30))
+            if self.role == DISRUPTOR_TEAM_B:
+                self.screen.blit(FONT.render("%d credits" % self.player_b.credits,
+                    1, (255, 255, 255)), (WIDTH - 100, 30))
+
+            self.refresh_log()
             pg.display.flip()
+
+    def refresh_log(self):
+        init_y = 30
+        for line in self.screen_log.get_logs():
+            self.screen.blit(FONT.render(line, 1,  (255,255, 255)), (15, 20 + init_y))
+            init_y += 15
 
     def update_camera(self):
         if self.role in [DISRUPTOR_TEAM_A, DISRUPTOR_TEAM_B]:

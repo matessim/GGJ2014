@@ -24,8 +24,9 @@ T_P = 10
 
 CLOCK = pg.time.Clock()
 
-FPS     = 60
-GRAVITY = 1
+FPS               = 60
+FRAMES_PER_CREDIT = 2 * FPS
+GRAVITY           = 1
 
 # Messages Server -> Client
 
@@ -49,6 +50,11 @@ DISRUPTOR_TEAM_A = 0
 RUNNER_TEAM_A    = 1
 DISRUPTOR_TEAM_B = 2
 RUNNER_TEAM_B    = 3
+
+PLAYER_DESC = {DISRUPTOR_TEAM_B : "Team B Disruptor",
+			   DISRUPTOR_TEAM_A : "Team A Disruptor",
+			   RUNNER_TEAM_B : "Team B Runner",
+			   RUNNER_TEAM_A : "Team A Runner"}
 
 LENGTH_FORMAT = "<I"
 UINT_LEN_BYTES = 4
