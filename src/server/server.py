@@ -144,7 +144,5 @@ class ServerGame(object):
         yield DISRUPTOR_TEAM_B
         yield RUNNER_TEAM_B
 
-import cProfile
-
 if __name__ == '__main__':
-    cProfile.run('ServerGame().run()', 'C:\Temp\log123.log')
+    ServerGame().run()

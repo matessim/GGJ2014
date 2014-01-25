@@ -91,7 +91,7 @@ class ClientGame(object):
 
             self.server.get_update([self.player_a, self.player_b], self.world)
             self.update_camera()
-            self.screen.fill(BLACK)
+            self.screen.fill(WHITE)
             self.screen.blit(self.player_a.image,
                     self.camera.to_local(self.player_a.rect))
             self.screen.blit(self.player_b.image,
