@@ -192,7 +192,7 @@ class ClientGame(object):
         print "Saving world..."
         fname = SAVE_FILE_FORMAT + str(int(time.time())) + '.bin'
         f = open(fname, 'wb')
-        f.write(json.dumps([(t.index ,t.rect.x, t.rect.y) for t in self.world if isinstance(t, Tile)]))
+        f.write(json.dumps([(t.index ,t.rect.x, t.rect.y) for t in self.world if isinstance(t, Tile)]).encode('zlib'))
         f.close()
         print "World saved to ", fname
 
