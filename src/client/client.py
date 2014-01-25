@@ -68,6 +68,8 @@ class ClientGame(object):
         s.connect((ip, SERVER_PORT))
         self.server = ServerConnection(s)
         self.role = self.server.wait_for_role()
+        pg.display.set_caption(PLAYER_DESC[self.role])
+        self.screen_log.log(PLAYER_DESC[self.role])
         print "Connected!"
 
     def run(self):
